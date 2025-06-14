@@ -29,3 +29,14 @@ jobs:
       - name: Run tests
         run: |
           uv run pytest src/tests/ -v --cov=src/marimushka
+
+  make:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run via Makefile
+        run: |
+          make test
