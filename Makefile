@@ -37,12 +37,6 @@ clean:  ## Clean up caches and build artifacts
 	# -X: only remove files ignored by git, -d: include directories, -f: force
 	@git clean -X -d -f
 
-# Mark 'clean-output' as a phony target
-.PHONY: clean-output
-clean-output:  ## Clean up output directories (_site, custom_output, output_dir)
-	@rm -rf _site custom_output output_dir
-	@echo "Output directories cleaned"
-
 
 # Mark 'help' as a phony target
 .PHONY: help

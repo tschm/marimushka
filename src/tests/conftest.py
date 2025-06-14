@@ -22,9 +22,13 @@ def temp_notebook_path():
 
 
 @pytest.fixture
-def temp_output_dir():
-    """Return a Path object for a temporary output directory."""
-    return Path("output_dir")
+def temp_output_dir(tmp_path):
+    """Return a Path object for a temporary output directory.
+
+    Uses pytest's built-in tmp_path fixture to create a unique temporary directory
+    for each test function, which is automatically cleaned up after the test.
+    """
+    return tmp_path
 
 
 @pytest.fixture

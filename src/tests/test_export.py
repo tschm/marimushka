@@ -13,7 +13,6 @@ import subprocess
 from pathlib import Path
 from unittest.mock import patch, MagicMock, mock_open
 
-import pytest
 import jinja2
 
 from marimushka.export import (
@@ -231,13 +230,13 @@ class TestMain:
 
     @patch('marimushka.export._export')
     @patch('marimushka.export._generate_index')
-    def test_main_success(self, mock_generate_index, mock_export, sample_notebooks_data, sample_apps_data, mock_logger):
+    def test_main_success(self, mock_generate_index, mock_export, tmp_path, sample_notebooks_data, sample_apps_data, mock_logger):
         """Test successful execution of the main function."""
         # Setup
         mock_export.side_effect = [sample_notebooks_data, sample_apps_data]
 
         # Execute
-        main(logger_instance=mock_logger)
+        main(output_dir=tmp_path, logger_instance=mock_logger)
 
         # Assert
         assert mock_export.call_count == 2
@@ -246,13 +245,13 @@ class TestMain:
 
     @patch('marimushka.export._export')
     @patch('marimushka.export._generate_index')
-    def test_main_no_notebooks_or_apps(self, mock_generate_index, mock_export, mock_logger):
+    def test_main_no_notebooks_or_apps(self, mock_generate_index, mock_export, tmp_path, mock_logger):
         """Test handling of no notebooks or apps found."""
         # Setup
         mock_export.return_value = []
 
         # Execute
-        main(logger_instance=mock_logger)
+        main(output_dir=tmp_path, logger_instance=mock_logger)
 
         # Assert
         assert mock_export.call_count == 2
@@ -261,37 +260,42 @@ class TestMain:
 
     @patch('marimushka.export._export')
     @patch('marimushka.export._generate_index')
-    def test_main_custom_paths(self, mock_generate_index, mock_export, sample_notebooks_data, sample_apps_data, mock_logger):
+    def test_main_custom_paths(self, mock_generate_index, mock_export, sample_notebooks_data, sample_apps_data, mock_logger, tmp_path):
         """Test main function with custom paths."""
         # Setup
         mock_export.side_effect = [sample_notebooks_data, sample_apps_data]
 
+        # Create subdirectories in tmp_path for custom paths
+        custom_output_dir = tmp_path / "custom_output"
+        custom_notebooks_dir = tmp_path / "custom_notebooks"
+        custom_apps_dir = tmp_path / "custom_apps"
+
         # Execute
         main(
-            output_dir="custom_output",
+            output_dir=custom_output_dir,
             template="custom_template.html.j2",
-            notebooks="custom_notebooks",
-            apps="custom_apps",
+            notebooks=custom_notebooks_dir,
+            apps=custom_apps_dir,
             logger_instance=mock_logger
         )
 
         # Assert
         # Check that _export was called with the custom paths
-        mock_export.assert_any_call(Path("custom_notebooks"), Path("custom_output"), as_app=False, logger_instance=mock_logger)
-        mock_export.assert_any_call(Path("custom_apps"), Path("custom_output"), as_app=True, logger_instance=mock_logger)
+        mock_export.assert_any_call(custom_notebooks_dir, custom_output_dir, as_app=False, logger_instance=mock_logger)
+        mock_export.assert_any_call(custom_apps_dir, custom_output_dir, as_app=True, logger_instance=mock_logger)
         # Check that _generate_index was called with the custom paths
         mock_generate_index.assert_called_once()
         mock_logger.info.assert_called()
 
     @patch('marimushka.export._export')
     @patch('marimushka.export._generate_index')
-    def test_main_default_logger(self, mock_generate_index, mock_export, sample_notebooks_data, sample_apps_data):
+    def test_main_default_logger(self, mock_generate_index, mock_export, sample_notebooks_data, sample_apps_data, tmp_path):
         """Test main function with default logger."""
         # Setup
         mock_export.side_effect = [sample_notebooks_data, sample_apps_data]
 
         # Execute
-        main()  # No logger_instance provided, should use default logger
+        main(output_dir=tmp_path)  # No logger_instance provided, should use default logger
 
         # Assert
         assert mock_export.call_count == 2
