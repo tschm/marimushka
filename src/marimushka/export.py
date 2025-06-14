@@ -1,5 +1,4 @@
-"""
-Build the script for marimo notebooks.
+"""Build the script for marimo notebooks.
 
 This script exports marimo notebooks to HTML/WebAssembly format and generates
 an index.html file that lists all the notebooks. It handles both regular notebooks
@@ -21,12 +20,12 @@ The exported files will be placed in the specified output directory (default: _s
 # ///
 
 import subprocess
+from logging import Logger
 from pathlib import Path
 
 import fire
 import jinja2
 from loguru import logger
-from logging import Logger
 
 
 def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = False, logger_instance=logger) -> bool:
@@ -45,6 +44,7 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
 
     Returns:
         bool: True if export succeeded, False otherwise
+
     """
     # Convert .py extension to .html for the output file
     output_path: Path = notebook_path.with_suffix(".html")
@@ -85,8 +85,11 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
 
 
 def _generate_index(
-    output_dir: Path, template_file: Path, notebooks_data: list[dict] | None = None, apps_data: list[dict] | None = None,
-    logger_instance=logger
+    output_dir: Path,
+    template_file: Path,
+    notebooks_data: list[dict] | None = None,
+    apps_data: list[dict] | None = None,
+    logger_instance=logger,
 ) -> None:
     """Generate an index.html file that lists all the notebooks.
 
@@ -103,6 +106,7 @@ def _generate_index(
 
     Returns:
         None
+
     """
     logger_instance.info("Generating index.html")
 
@@ -125,7 +129,7 @@ def _generate_index(
         rendered_html = template.render(notebooks=notebooks_data, apps=apps_data)
 
         # Write the rendered HTML to the index.html file
-        with open(index_path, "w") as f:
+        with Path.open(index_path, "w") as f:
             f.write(rendered_html)
         logger_instance.info(f"Successfully generated index.html at {index_path}")
 
@@ -152,6 +156,7 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
 
     Returns:
         List[dict]: List of dictionaries with "display_name" and "html_path" for each notebook
+
     """
     # Check if the folder exists
     if not folder.exists():
@@ -186,9 +191,9 @@ def main(
     template: str | Path = "templates/index.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
-    logger_instance: Logger | None = None
+    logger_instance: Logger | None = None,
 ) -> None:
-    """Main function to export marimo notebooks.
+    """Export marimo notebooks.
 
     This function:
     1. Parses command line arguments
@@ -202,6 +207,7 @@ def main(
 
     Returns:
         None
+
     """
     if logger_instance is None:
         logger_instance = logger
@@ -236,11 +242,12 @@ def main(
         notebooks_data=notebooks_data,
         apps_data=apps_data,
         template_file=template_file,
-        logger_instance=logger_instance
+        logger_instance=logger_instance,
     )
 
     logger_instance.info(f"Build completed successfully. Output directory: {output_dir}")
 
 
 def cli():
+    """Command line interface for marimushka build process."""
     fire.Fire(main)

@@ -1,12 +1,12 @@
-"""
-Pytest configuration file.
+"""Pytest configuration file.
 
 This file contains fixtures and configuration for pytest.
 """
 
-import pytest
-from unittest.mock import MagicMock
 from pathlib import Path
+from unittest.mock import MagicMock
+
+import pytest
 
 
 @pytest.fixture
