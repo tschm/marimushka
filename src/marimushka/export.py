@@ -91,7 +91,7 @@ def _generate_index(
     """Generate an index.html file that lists all the notebooks.
 
     This function creates an HTML index page that displays links to all the exported
-    notebooks. The index page includes the marimushka logo and displays each notebook
+    notebooks. The index page includes the marimo logo and displays each notebook
     with a formatted title and a link to open it.
 
     Args:

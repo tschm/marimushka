@@ -1,10 +1,9 @@
-# 📦 [marimushka](https://tschm.github.io/marimushka/book)
+# 📦 marimushka
 
 [![PyPI version](https://badge.fury.io/py/marimushka.svg)](https://badge.fury.io/py/marimushka)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Created with qCradle](https://img.shields.io/badge/Created%20with-qCradle-blue?style=flat-square)](https://github.com/tschm/package)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tschm/marimushka/pre-commit.yml?label=pre-commit)](https://github.com/tschm/marimushka/actions/workflows/pre-commit.yml)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tschm/marimushka/release.yml?label=release)](https://github.com/tschm/marimushka/actions/workflows/release.yml)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/marimushka)](https://pypi.org/project/marimushka/)
 [![GitHub stars](https://img.shields.io/github/stars/tschm/marimushka)](https://github.com/tschm/marimushka/stargazers)
@@ -109,5 +108,4 @@ main(template="my_templates/custom.html.j2")
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
-for details.
+This project is licensed under the [MIT License](LICENSE).
