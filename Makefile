@@ -15,13 +15,19 @@ venv:
 .PHONY: install
 install: venv ## Install a virtual environment
 	@uv pip install --upgrade pip  # Ensure pip is up to date
-	@uv sync --frozen  # Install all dependencies from pyproject.toml
+	@uv sync --all-extras  # Install all dependencies from pyproject.toml
 
 
 # Mark 'fmt' as a phony target
 .PHONY: fmt
 fmt: venv ## Run autoformatting and linting
 	@uvx pre-commit run --all-files  # Run all pre-commit hooks on all files
+
+# Mark 'test' as a phony target
+.PHONY: test
+test: install ## Run tests with pytest
+	#@uv pip install -e ".[dev]"  # Install package with dev dependencies
+	@uv run python -m pytest src/tests/ -v --cov=src/marimushka --cov-report term-missing # Run all tests with coverage reporting
 
 
 # Mark 'clean' as a phony target
@@ -30,6 +36,12 @@ clean:  ## Clean up caches and build artifacts
 	# Remove all files and directories that are ignored by git
 	# -X: only remove files ignored by git, -d: include directories, -f: force
 	@git clean -X -d -f
+
+# Mark 'clean-output' as a phony target
+.PHONY: clean-output
+clean-output:  ## Clean up output directories (_site, custom_output, output_dir)
+	@rm -rf _site custom_output output_dir
+	@echo "Output directories cleaned"
 
 
 # Mark 'help' as a phony target
