@@ -1,0 +1,24 @@
+name: 'Export notebook using marimo'
+description: 'Export of notebooks and apps'
+
+runs:
+  using: "composite"
+  steps:
+      # Check out the repository code
+      - uses: actions/checkout@v4
+
+      # Install uv package manager for faster Python package installation
+      - name: 🚀 Install uv
+        uses: astral-sh/setup-uv@v6
+
+      # Run the build script to export notebooks to WebAssembly
+      - name: 🛠️ Export notebooks
+        shell: bash
+        run: |
+          uvx marimograd
+
+      # Upload the generated site as an artifact for the deploy job
+      - name: 📤 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site  # Directory containing the built site
