@@ -22,7 +22,7 @@ runs:
         run: |
           # Path to default template in this action's directory
           DEFAULT_TEMPLATE="${GITHUB_ACTION_PATH}/templates/default.html.j2"
-  
+
           # Use provided template if set, otherwise fallback
           TEMPLATE="${{ inputs.template }}"
           if [ -z "$TEMPLATE" ]; then
@@ -31,7 +31,7 @@ runs:
           else
             echo "Using provided template: $TEMPLATE"
           fi
-  
+
           uvx marimograd --template "$TEMPLATE"
 
       # Upload the generated site as an artifact for the deploy job

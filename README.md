@@ -8,7 +8,9 @@
 
 ## 🚀 Overview
 
-Marimograd is a tool for exporting [marimo](https://marimo.io) notebooks to HTML/WebAssembly format with custom styling. It helps you create beautiful, interactive web versions of your marimo notebooks and applications.
+Marimograd is a tool for exporting [marimo](https://marimo.io) notebooks
+to HTML/WebAssembly format with custom styling. It helps you create beautiful,
+interactive web versions of your marimo notebooks and applications.
 
 ### ✨ Features
 
@@ -57,7 +59,7 @@ marimograd --output-dir my_site
 
 Marimograd expects your project to have the following structure:
 
-```
+```bash
 your-project/
 ├── notebooks/     # Regular marimo notebooks (.py files)
 ├── apps/          # Marimo applications (.py files)
@@ -104,4 +106,5 @@ main(template="my_templates/custom.html.j2")
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
+for details.
