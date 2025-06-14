@@ -170,7 +170,7 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
     # For each successfully exported notebook, add its data to the notebook_data list
     notebook_data = [
         {
-            "display_name": (nb.stem.replace("_", " ").title()),
+            "display_name": (nb.stem.replace("_", " ")),
             "html_path": str(nb.with_suffix(".html")),
         }
         for nb in notebooks
