@@ -46,10 +46,10 @@ runs:
         TMP_DIR=$(mktemp -d)
         echo "Using temporary directory: $TMP_DIR"
 
-        uvx marimushka --template="$TEMPLATE" \ 
-                       --output="$TMP_DIR" \ 
-                       --apps=${{ inputs.apps }} \
-                       --notebooks=${{ inputs.notebooks }}
+        uvx marimushka --template="$TEMPLATE" \
+                       --output="$TMP_DIR" \
+                       --apps="${{ inputs.apps }}" \
+                       --notebooks="${{ inputs.notebooks }}"
 
         # Save the temp directory for the next step
         echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
