@@ -1,0 +1,42 @@
+name: Python Tests
+
+on:
+  push
+
+jobs:
+  test:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install --upgrade pip
+          uv sync --all-extras
+      
+      - name: Run tests
+        run: |
+          uv run pytest src/tests/ -v --cov=src/marimushka
+
+  make:
+    name: Run Python Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run via Makefile
+        run: |
+          make test

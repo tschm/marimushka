@@ -106,6 +106,40 @@ main(template="my_templates/custom.html.j2")
 - 🚢 Push to the branch (git push origin feature/amazing-feature)
 - 🔍 Open a Pull Request
 
+### Running Tests
+
+To run the tests, you'll need to install the development dependencies:
+
+```bash
+# Install the package with development dependencies
+pip install -e ".[dev]"
+
+# Or with uv (recommended)
+uv pip install -e ".[dev]"
+```
+
+Then you can run the tests using pytest:
+
+```bash
+# Run tests with pytest
+pytest tests/ -v
+
+# Or use the make command
+make test
+```
+
+### Cleaning Output Directories
+
+When you run marimushka, it creates output directories (`_site`, `custom_output`, or `output_dir` depending on your configuration). To clean these directories, you can use:
+
+```bash
+# Clean all output directories
+make clean-output
+
+# Clean all ignored files (including output directories)
+make clean
+```
+
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
