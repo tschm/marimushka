@@ -52,10 +52,18 @@ runs:
         # Save the temp directory for the next step
         echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
 
-    - name: 📤 Upload artifact
-      uses: actions/upload-pages-artifact@v3
+    #- name: 📤 Upload artifact
+    #  uses: actions/upload-pages-artifact@v3
+    #  with:
+    #    path: ${{ env.TMP_DIR }}
+
+    - name: Upload HTML artifacts
+      if: ${{ env.ACT != 'true' }}  # Skip if running with 'act'
+      uses: actions/upload-artifact@v4
       with:
+        name: marimo
         path: ${{ env.TMP_DIR }}
+        retention-days: 1
 
     - name: 🧹 Clean up temporary folder
       shell: bash
