@@ -46,8 +46,8 @@ runs:
         TMP_DIR=$(mktemp -d)
         echo "Using temporary directory: $TMP_DIR"
 
-        uvx marimushka --template "$TEMPLATE" \ 
-                       --output_dir "$TMP_DIR" \ 
+        uvx marimushka --template="$TEMPLATE" \ 
+                       --output="$TMP_DIR" \ 
                        --apps=${{ inputs.apps }} \
                        --notebooks=${{ inputs.notebooks }}
 

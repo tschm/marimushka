@@ -226,7 +226,7 @@ class TestMain:
         mock_export.side_effect = [sample_notebooks_data, sample_apps_data]
 
         # Execute
-        main(output_dir=tmp_path, logger_instance=mock_logger)
+        main(output=tmp_path, logger_instance=mock_logger)
 
         # Assert
         assert mock_export.call_count == 2
@@ -241,7 +241,7 @@ class TestMain:
         mock_export.return_value = []
 
         # Execute
-        main(output_dir=tmp_path, logger_instance=mock_logger)
+        main(output=tmp_path, logger_instance=mock_logger)
 
         # Assert
         assert mock_export.call_count == 2
@@ -262,7 +262,7 @@ class TestMain:
 
         # Execute
         main(
-            output_dir=custom_output_dir,
+            output=custom_output_dir,
             template="custom_template.html.j2",
             notebooks=custom_notebooks_dir,
             apps=custom_apps_dir,
@@ -285,7 +285,7 @@ class TestMain:
         mock_export.side_effect = [sample_notebooks_data, sample_apps_data]
 
         # Execute
-        main(output_dir=tmp_path)  # No logger_instance provided, should use default logger
+        main(output=tmp_path)  # No logger_instance provided, should use default logger
 
         # Assert
         assert mock_export.call_count == 2

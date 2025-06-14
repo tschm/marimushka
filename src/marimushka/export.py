@@ -187,7 +187,7 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
 
 
 def main(
-    output_dir: str | Path = "_site",
+    output: str | Path = "_site",
     template: str | Path = "templates/index.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
@@ -201,7 +201,7 @@ def main(
     3. Generates an index.html file that lists all the notebooks
 
     Command line arguments:
-        --output-dir: Directory where the exported files will be saved (default: _site)
+        --output: Directory where the exported files will be saved (default: _site)
         --template: Path to the template file (default: templates/index.html.j2)
         --logger_instance: Logger instance to use. Defaults to the standard loguru logger.
 
@@ -215,21 +215,21 @@ def main(
     logger_instance.info("Starting marimushka build process")
 
     # Convert output_dir explicitly to Path (not done by fire)
-    output_dir: Path = Path(output_dir)
-    logger_instance.info(f"Output directory: {output_dir}")
+    output_dir: Path = Path(output)
+    logger_instance.info(f"Output directory: {output}")
 
     # Make sure the output directory exists
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output.mkdir(parents=True, exist_ok=True)
 
     # Convert template to Path if provided
     template_file: Path = Path(template)
     logger_instance.info(f"Using template file: {template_file}")
 
     # Export notebooks from the notebooks/ directory
-    notebooks_data = _export(Path(notebooks), output_dir, as_app=False, logger_instance=logger_instance)
+    notebooks_data = _export(Path(notebooks), output, as_app=False, logger_instance=logger_instance)
 
     # Export apps from the apps/ directory
-    apps_data = _export(Path(apps), output_dir, as_app=True, logger_instance=logger_instance)
+    apps_data = _export(Path(apps), output, as_app=True, logger_instance=logger_instance)
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
@@ -238,7 +238,7 @@ def main(
 
     # Generate the index.html file that lists all notebooks and apps
     _generate_index(
-        output_dir=output_dir,
+        output_dir=output,
         notebooks_data=notebooks_data,
         apps_data=apps_data,
         template_file=template_file,
