@@ -64,7 +64,7 @@ your-project/
 ├── notebooks/     # Regular marimo notebooks (.py files)
 ├── apps/          # Marimo applications (.py files)
 └── templates/     # Optional: Custom templates for export
-    └── index.html.j2  # Default template location
+    └── custom.html.j2  # Default template location
 ```
 
 ### GitHub Action
