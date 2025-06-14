@@ -1,0 +1,76 @@
+# Workflow to build and publish the project documentation
+# This workflow runs automatically on every push to the repository
+
+name: "book"
+
+on:
+- push  # Trigger on push events
+
+
+# Permissions needed for the workflow
+permissions:
+    checks: write  # Allows the workflow to write check results
+    contents: read  # Read-only access to repository contents
+
+jobs:
+  # Job to run Marimo notebooks for interactive documentation
+  marimo:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Build the virtual environment"
+        uses: tschm/cradle/actions/environment@v0.1.68  # Custom action to set up Python environment
+
+      - uses: tschm/cradle/actions/marimo@v0.1.68  # Custom action to run Marimo notebooks
+        with:
+          source_folder: book/marimo  # Folder containing the Marimo notebooks
+
+  # Job to generate API documentation with pdoc
+  pdoc:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Build the virtual environment"
+        uses: tschm/cradle/actions/environment@v0.1.68  # Custom action to set up Python environment
+
+      - uses: tschm/cradle/actions/pdoc@v0.1.68  # Custom action to generate API documentation
+        with:
+          source-folder: src/marimograd  # Source code folder to document
+
+
+  # Job to run tests and generate coverage reports
+  test:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Build the virtual environment"
+        uses: tschm/cradle/actions/environment@v0.1.68  # Custom action to set up Python environment
+
+      - uses: tschm/cradle/actions/coverage@v0.1.68  # Custom action to run tests with coverage
+        with:
+          tests-folder: src/tests  # Folder containing the tests
+          source-folder: src/marimograd  # Source code folder to test
+          coveralls: 'false'  # Don't upload to Coveralls
+
+  # Job to run Jupyter notebooks
+  jupyter:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Build the virtual environment"
+        uses: tschm/cradle/actions/environment@v0.1.68  # Custom action to set up Python environment
+
+      - uses: tschm/cradle/actions/jupyter@v0.1.68  # Custom action to run Jupyter notebooks
+
+  # Job to build and publish the book documentation
+  book:
+    runs-on: "ubuntu-latest"
+    needs: [test, pdoc, jupyter, marimo]  # This job depends on all other jobs
+
+    # Additional write permissions needed for publishing
+    permissions:
+      contents: write  # Allows the workflow to write to the repository (for publishing)
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Check out the repository code
+
+      - name: Upload the book
+        if: ${{ env.ACT != 'true' }}  # Skip if running with 'act'
+        uses: tschm/cradle/actions/book@v0.1.68  # Custom action to build and upload the book

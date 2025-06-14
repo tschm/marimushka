@@ -1,0 +1,30 @@
+# Workflow to run pre-commit checks and dependency analysis
+# This workflow runs automatically on every push to the repository
+
+name: pre-commit
+
+on:
+  push:  # Trigger on push events
+
+# Permissions needed for the workflow
+permissions:
+  checks: write  # Allows the workflow to write check results
+  contents: read  # Read-only access to repository contents
+
+jobs:
+  # Job to run dependency analysis with deptry
+  deptry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Build the virtual environment"
+        uses: tschm/cradle/actions/environment@v0.1.68  # Custom action to set up Python environment
+
+      - uses: tschm/cradle/actions/deptry@v0.1.68  # Custom action to run deptry for dependency analysis
+        with:
+          source-folder: src/marimograd  # Source code folder to analyze
+
+  # Job to run pre-commit checks on the repository
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tschm/cradle/actions/pre-commit@v0.1.68  # Custom action to run pre-commit checks

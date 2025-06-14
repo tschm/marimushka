@@ -1,0 +1,39 @@
+# Workflow to build and release project artifacts
+# This workflow is manually triggered via the GitHub UI
+
+name: Build and Release
+
+on:
+  # Trigger on manual dispatch
+  workflow_dispatch
+
+# Permissions needed for the workflow
+permissions:
+  contents: write  # Allows the workflow to write to the repository (create tags)
+  packages: write  # Allows the workflow to write to GitHub Packages (for Docker images)
+
+jobs:
+  # Job to generate a new version tag
+  tagging:
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.tag.outputs.new_tag }}  # Output the new tag to be used by other jobs
+
+    steps:
+      - name: Generate Tag
+        id: tag
+        uses: tschm/cradle/actions/tag@v0.1.68  # Custom action to generate a new tag
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
+
+
+
+  # Job to display debugging information
+  debug:
+    runs-on: ubuntu-latest
+    needs: tagging  # This job depends on the tagging job
+    steps:
+      - name: Output
+        run: |
+          echo "Repository ${{ github.repository }}"  # Print the repository name
+          echo "Tag ${{ needs.tagging.outputs.new_tag }}"  # Print the new tag
