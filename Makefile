@@ -39,10 +39,3 @@ help:  ## Display this help screen
 	# Find all targets with comments (##) and display them as a help menu
 	# This grep/awk command extracts target names and their descriptions from the Makefile
 	@grep -E '^[a-z.A-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}' | sort
-
-
-# Mark 'marimo' as a phony target
-.PHONY: marimo
-marimo: install ## Install Marimo
-	@uv pip install marimo  # Install Marimo interactive notebook tool
-	@uv run marimo edit book/marimo  # Start Marimo in edit mode, opening the book/marimo directory
