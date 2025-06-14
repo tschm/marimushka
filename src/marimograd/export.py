@@ -234,5 +234,8 @@ def main(
     logger.info(f"Build completed successfully. Output directory: {output_dir}")
 
 
-if __name__ == "__main__":
+def cli():
     fire.Fire(main)
+
+#if __name__ == "__main__":
+#    fire.Fire(main)
