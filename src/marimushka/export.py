@@ -1,12 +1,12 @@
 """
-Build script for marimo notebooks.
+Build the script for marimo notebooks.
 
 This script exports marimo notebooks to HTML/WebAssembly format and generates
 an index.html file that lists all the notebooks. It handles both regular notebooks
 (from the notebooks/ directory) and apps (from the apps/ directory).
 
 The script can be run from the command line with optional arguments:
-    uv run .github/scripts/build.py [--output-dir OUTPUT_DIR]
+    uvx marimushka [--output-dir OUTPUT_DIR]
 
 The exported files will be placed in the specified output directory (default: _site).
 """
@@ -26,17 +26,10 @@ from pathlib import Path
 import fire
 import jinja2
 from loguru import logger
-
-# Configure logging
-# logging.basicConfig(
-#    level=logging.INFO,
-#    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-#    datefmt='%Y-%m-%d %H:%M:%S'
-# )
-# logger = logging.getLogger("marimo-build")
+from logging import Logger
 
 
-def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = False) -> bool:
+def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = False, logger_instance=logger) -> bool:
     """Export a single marimo notebook to HTML/WebAssembly format.
 
     This function takes a marimo notebook (.py file) and exports it to HTML/WebAssembly format.
@@ -48,6 +41,7 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
         output_dir (Path): Directory where the exported HTML file will be saved
         as_app (bool, optional): Whether to export as an app (run mode) or notebook (edit mode).
                                 Defaults to False.
+        logger_instance: Logger instance to use. Defaults to the standard logger.
 
     Returns:
         bool: True if export succeeded, False otherwise
@@ -55,48 +49,49 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
     # Convert .py extension to .html for the output file
     output_path: Path = notebook_path.with_suffix(".html")
 
-    # Base command for marimo export
+    # Base command for marimushka export
     cmd: list[str] = ["uvx", "marimo", "export", "html-wasm", "--sandbox"]
 
     # Configure export mode based on whether it's an app or a notebook
     if as_app:
-        logger.info(f"Exporting {notebook_path} to {output_path} as app")
+        logger_instance.info(f"Exporting {notebook_path} to {output_path} as app")
         cmd.extend(["--mode", "run", "--no-show-code"])  # Apps run in "run" mode with hidden code
     else:
-        logger.info(f"Exporting {notebook_path} to {output_path} as notebook")
+        logger_instance.info(f"Exporting {notebook_path} to {output_path} as notebook")
         cmd.extend(["--mode", "edit"])  # Notebooks run in "edit" mode
 
     try:
-        # Create full output path and ensure directory exists
+        # Create the full output path and ensure the directory exists
         output_file: Path = output_dir / notebook_path.with_suffix(".html")
         output_file.parent.mkdir(parents=True, exist_ok=True)
 
-        # Add notebook path and output file to command
+        # Add the notebook path and output file to command
         cmd.extend([str(notebook_path), "-o", str(output_file)])
 
         # Run marimo export command
-        logger.debug(f"Running command: {cmd}")
+        logger_instance.debug(f"Running command: {cmd}")
         subprocess.run(cmd, capture_output=True, text=True, check=True)
-        logger.info(f"Successfully exported {notebook_path}")
+        logger_instance.info(f"Successfully exported {notebook_path}")
         return True
     except subprocess.CalledProcessError as e:
         # Handle marimo export errors
-        logger.error(f"Error exporting {notebook_path}:")
-        logger.error(f"Command output: {e.stderr}")
+        logger_instance.error(f"Error exporting {notebook_path}:")
+        logger_instance.error(f"Command output: {e.stderr}")
         return False
     except Exception as e:
         # Handle unexpected errors
-        logger.error(f"Unexpected error exporting {notebook_path}: {e}")
+        logger_instance.error(f"Unexpected error exporting {notebook_path}: {e}")
         return False
 
 
 def _generate_index(
-    output_dir: Path, template_file: Path, notebooks_data: list[dict] | None = None, apps_data: list[dict] | None = None
+    output_dir: Path, template_file: Path, notebooks_data: list[dict] | None = None, apps_data: list[dict] | None = None,
+    logger_instance=logger
 ) -> None:
     """Generate an index.html file that lists all the notebooks.
 
     This function creates an HTML index page that displays links to all the exported
-    notebooks. The index page includes the marimo logo and displays each notebook
+    notebooks. The index page includes the marimushka logo and displays each notebook
     with a formatted title and a link to open it.
 
     Args:
@@ -104,11 +99,12 @@ def _generate_index(
         apps_data (List[dict]): List of dictionaries with data for apps
         output_dir (Path): Directory where the index.html file will be saved
         template_file (Path, optional): Path to the template file. If None, uses the default template.
+        logger_instance: Logger instance to use. Defaults to the standard logger.
 
     Returns:
         None
     """
-    logger.info("Generating index.html")
+    logger_instance.info("Generating index.html")
 
     # Create the full path for the index.html file
     index_path: Path = output_dir / "index.html"
@@ -131,17 +127,17 @@ def _generate_index(
         # Write the rendered HTML to the index.html file
         with open(index_path, "w") as f:
             f.write(rendered_html)
-        logger.info(f"Successfully generated index.html at {index_path}")
+        logger_instance.info(f"Successfully generated index.html at {index_path}")
 
     except OSError as e:
         # Handle file I/O errors
-        logger.error(f"Error generating index.html: {e}")
+        logger_instance.error(f"Error generating index.html: {e}")
     except jinja2.exceptions.TemplateError as e:
         # Handle template errors
-        logger.error(f"Error rendering template: {e}")
+        logger_instance.error(f"Error rendering template: {e}")
 
 
-def _export(folder: Path, output_dir: Path, as_app: bool = False) -> list[dict]:
+def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instance=logger) -> list[dict]:
     """Export all marimo notebooks in a folder to HTML/WebAssembly format.
 
     This function finds all Python files in the specified folder and exports them
@@ -152,22 +148,23 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False) -> list[dict]:
         folder (Path): Path to the folder containing marimo notebooks
         output_dir (Path): Directory where the exported HTML files will be saved
         as_app (bool, optional): Whether to export as apps (run mode) or notebooks (edit mode).
+        logger_instance: Logger instance to use. Defaults to the standard logger.
 
     Returns:
         List[dict]: List of dictionaries with "display_name" and "html_path" for each notebook
     """
     # Check if the folder exists
     if not folder.exists():
-        logger.warning(f"Directory not found: {folder}")
+        logger_instance.warning(f"Directory not found: {folder}")
         return []
 
     # Find all Python files recursively in the folder
     notebooks = list(folder.rglob("*.py"))
-    logger.debug(f"Found {len(notebooks)} Python files in {folder}")
+    logger_instance.debug(f"Found {len(notebooks)} Python files in {folder}")
 
     # Exit if no notebooks were found
     if not notebooks:
-        logger.warning(f"No notebooks found in {folder}!")
+        logger_instance.warning(f"No notebooks found in {folder}!")
         return []
 
     # For each successfully exported notebook, add its data to the notebook_data list
@@ -177,66 +174,71 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False) -> list[dict]:
             "html_path": str(nb.with_suffix(".html")),
         }
         for nb in notebooks
-        if _export_html_wasm(nb, output_dir, as_app=as_app)
+        if _export_html_wasm(nb, output_dir, as_app=as_app, logger_instance=logger_instance)
     ]
 
-    logger.info(f"Successfully exported {len(notebook_data)} out of {len(notebooks)} files from {folder}")
+    logger_instance.info(f"Successfully exported {len(notebook_data)} out of {len(notebooks)} files from {folder}")
     return notebook_data
 
 
 def main(
     output_dir: str | Path = "_site",
     template: str | Path = "templates/index.html.j2",
+    logger_instance: Logger | None = None
 ) -> None:
     """Main function to export marimo notebooks.
 
     This function:
     1. Parses command line arguments
-    2. Exports all marimo notebooks in the 'notebooks' and 'apps' directories
+    2. Exports all marimo notebooks in 'notebooks' and 'apps' directories
     3. Generates an index.html file that lists all the notebooks
 
     Command line arguments:
         --output-dir: Directory where the exported files will be saved (default: _site)
         --template: Path to the template file (default: templates/index.html.j2)
+        --logger_instance: Logger instance to use. Defaults to the standard loguru logger.
 
     Returns:
         None
     """
-    logger.info("Starting marimo build process")
+    if logger_instance is None:
+        logger_instance = logger
+
+    logger_instance.info("Starting marimushka build process")
 
     # Convert output_dir explicitly to Path (not done by fire)
     output_dir: Path = Path(output_dir)
-    logger.info(f"Output directory: {output_dir}")
+    logger_instance.info(f"Output directory: {output_dir}")
 
     # Make sure the output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Convert template to Path if provided
     template_file: Path = Path(template)
-    logger.info(f"Using template file: {template_file}")
+    logger_instance.info(f"Using template file: {template_file}")
 
     # Export notebooks from the notebooks/ directory
-    notebooks_data = _export(Path("notebooks"), output_dir, as_app=False)
+    notebooks_data = _export(Path("notebooks"), output_dir, as_app=False, logger_instance=logger_instance)
 
     # Export apps from the apps/ directory
-    apps_data = _export(Path("apps"), output_dir, as_app=True)
+    apps_data = _export(Path("apps"), output_dir, as_app=True, logger_instance=logger_instance)
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
-        logger.warning("No notebooks or apps found!")
+        logger_instance.warning("No notebooks or apps found!")
         return
 
     # Generate the index.html file that lists all notebooks and apps
     _generate_index(
-        output_dir=output_dir, notebooks_data=notebooks_data, apps_data=apps_data, template_file=template_file
+        output_dir=output_dir,
+        notebooks_data=notebooks_data,
+        apps_data=apps_data,
+        template_file=template_file,
+        logger_instance=logger_instance
     )
 
-    logger.info(f"Build completed successfully. Output directory: {output_dir}")
+    logger_instance.info(f"Build completed successfully. Output directory: {output_dir}")
 
 
 def cli():
     fire.Fire(main)
-
-
-# if __name__ == "__main__":
-#    fire.Fire(main)

@@ -1,5 +1,5 @@
 [project]
-name = 'marimograd'
+name = 'marimushka'
 version = "0.0.0"
 description = "Export marimo notebooks in style"
 # Please add authors and correct the email...
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.urls]
-repository = "https://github.com/tschm/marimograd"
+repository = "https://github.com/tschm/marimushka"
 
 [tool.ruff]
 line-length = 120
@@ -31,14 +31,14 @@ build-backend = "hatchling.build"
 
 # Entry points for command-line scripts
 [project.scripts]
-marimograd = "marimograd.export:cli"
+marimushka = "marimushka.export:cli"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/marimograd"]
+packages = ["src/marimushka"]
 
 [tool.hatch.build]
 include = [
     "LICENSE",    # Ensure the LICENSE file is included in your package
     "README.md",
-    "src/marimograd"
+    "src/marimushka"
 ]

@@ -1,14 +1,17 @@
-# 📦 [marimograd](https://tschm.github.io/marimograd/book)
+# 📦 [marimushka](https://tschm.github.io/marimushka/book)
 
-[![PyPI version](https://badge.fury.io/py/marimograd.svg)](https://badge.fury.io/py/marimograd)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
+[![PyPI version](https://badge.fury.io/py/marimushka.svg)](https://badge.fury.io/py/marimushka)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Created with qCradle](https://img.shields.io/badge/Created%20with-qCradle-blue?style=flat-square)](https://github.com/tschm/package)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tschm/marimograd)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tschm/marimushka/pre-commit.yml?label=pre-commit)](https://github.com/tschm/marimushka/actions/workflows/pre-commit.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tschm/marimushka/release.yml?label=release)](https://github.com/tschm/marimushka/actions/workflows/release.yml)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/marimushka)](https://pypi.org/project/marimushka/)
+[![GitHub stars](https://img.shields.io/github/stars/tschm/marimushka)](https://github.com/tschm/marimushka/stargazers)
 
 ## 🚀 Overview
 
-Marimograd is a tool for exporting [marimo](https://marimo.io) notebooks
+Marimushka is a tool for exporting [marimo](https://marimo.io) notebooks
 to HTML/WebAssembly format with custom styling. It helps you create beautiful,
 interactive web versions of your marimo notebooks and applications.
 
@@ -31,13 +34,13 @@ interactive web versions of your marimo notebooks and applications.
 ### Using pip
 
 ```bash
-pip install marimograd
+pip install marimushka
 ```
 
 ### Using uv (recommended)
 
 ```bash
-uv pip install marimograd
+uv pip install marimushka
 ```
 
 ## 🛠️ Usage
@@ -46,18 +49,18 @@ uv pip install marimograd
 
 ```bash
 # Basic usage (uses default settings)
-marimograd
+marimushka
 
 # Specify a custom template
-marimograd --template path/to/template.html.j2
+marimushka --template path/to/template.html.j2
 
 # Specify a custom output directory
-marimograd --output-dir my_site
+marimushka --output-dir my_site
 ```
 
 ### Project Structure
 
-Marimograd expects your project to have the following structure:
+Marimushka expects your project to have the following structure:
 
 ```bash
 your-project/
@@ -69,11 +72,11 @@ your-project/
 
 ### GitHub Action
 
-You can use marimograd in your GitHub Actions workflow:
+You can use marimushka in your GitHub Actions workflow:
 
 ```yaml
 - name: Export marimo notebooks
-  uses: tschm/marimograd/actions/export@main
+  uses: tschm/marimushka/actions/export@main
   with:
     template: 'path/to/template.html.j2'
 ```
@@ -84,7 +87,7 @@ You can use marimograd in your GitHub Actions workflow:
 
 ```python
 # Export all notebooks and apps with default settings
-from marimograd.export import main
+from marimushka.export import main
 main()
 ```
 
@@ -92,7 +95,7 @@ main()
 
 ```python
 # Export with a custom template
-from marimograd.export import main
+from marimushka.export import main
 main(template="my_templates/custom.html.j2")
 ```
 

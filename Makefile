@@ -1,4 +1,4 @@
-# Makefile for the package project template
+# Makefile for the marimushka project
 # This Makefile provides commands for setting up the development environment,
 # running tests, starting interactive notebooks, and maintaining code quality.
 
