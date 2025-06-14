@@ -5,6 +5,14 @@ inputs:
   template:
     description: 'The html.j2 template for export'
     required: false
+  apps:
+    description: 'The apps folder'
+    required: false
+    default: 'apps'
+  notebooks:
+    description: 'The notebook folder'
+    required: false
+    default: 'notebooks'
 
 runs:
   using: "composite"

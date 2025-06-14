@@ -184,6 +184,8 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
 def main(
     output_dir: str | Path = "_site",
     template: str | Path = "templates/index.html.j2",
+    notebooks: str | Path = "notebooks",
+    apps: str | Path = "apps",
     logger_instance: Logger | None = None
 ) -> None:
     """Main function to export marimo notebooks.
@@ -218,10 +220,10 @@ def main(
     logger_instance.info(f"Using template file: {template_file}")
 
     # Export notebooks from the notebooks/ directory
-    notebooks_data = _export(Path("notebooks"), output_dir, as_app=False, logger_instance=logger_instance)
+    notebooks_data = _export(Path(notebooks), output_dir, as_app=False, logger_instance=logger_instance)
 
     # Export apps from the apps/ directory
-    apps_data = _export(Path("apps"), output_dir, as_app=True, logger_instance=logger_instance)
+    apps_data = _export(Path(apps), output_dir, as_app=True, logger_instance=logger_instance)
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
