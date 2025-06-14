@@ -1,6 +1,11 @@
 name: 'Export notebook using marimo'
 description: 'Export of notebooks and apps'
 
+inputs:
+  template:
+    description: 'html.j2 template for export'
+    required: true
+
 runs:
   using: "composite"
   steps:
@@ -15,7 +20,7 @@ runs:
       - name: 🛠️ Export notebooks
         shell: bash
         run: |
-          uvx marimograd
+          uvx marimograd --template ${{inputs.template}}
 
       # Upload the generated site as an artifact for the deploy job
       - name: 📤 Upload artifact
