@@ -20,16 +20,6 @@ dev = [
 [project.urls]
 repository = "https://github.com/tschm/marimushka"
 
-[tool.ruff]
-line-length = 120
-target-version = "py312"
-exclude = [
-    "*__init__.py"
-]
-
-[tool.ruff.lint]
-select = ["E", "F", "I"]
-
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

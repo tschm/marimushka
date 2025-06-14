@@ -1,5 +1,4 @@
-"""
-Pytest configuration file.
+"""Pytest configuration file.
 
 This file contains fixtures and configuration for pytest.
 """

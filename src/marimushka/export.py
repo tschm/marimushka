@@ -1,5 +1,4 @@
-"""
-Build the script for marimo notebooks.
+"""Build the script for marimo notebooks.
 
 This script exports marimo notebooks to HTML/WebAssembly format and generates
 an index.html file that lists all the notebooks. It handles both regular notebooks
@@ -45,6 +44,7 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
 
     Returns:
         bool: True if export succeeded, False otherwise
+
     """
     # Convert .py extension to .html for the output file
     output_path: Path = notebook_path.with_suffix(".html")
@@ -106,6 +106,7 @@ def _generate_index(
 
     Returns:
         None
+
     """
     logger_instance.info("Generating index.html")
 
@@ -155,6 +156,7 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
 
     Returns:
         List[dict]: List of dictionaries with "display_name" and "html_path" for each notebook
+
     """
     # Check if the folder exists
     if not folder.exists():
@@ -191,7 +193,7 @@ def main(
     apps: str | Path = "apps",
     logger_instance: Logger | None = None,
 ) -> None:
-    """Main function to export marimo notebooks.
+    """Export marimo notebooks.
 
     This function:
     1. Parses command line arguments
@@ -205,6 +207,7 @@ def main(
 
     Returns:
         None
+
     """
     if logger_instance is None:
         logger_instance = logger
@@ -246,4 +249,5 @@ def main(
 
 
 def cli():
+    """Command line interface for marimushka build process."""
     fire.Fire(main)

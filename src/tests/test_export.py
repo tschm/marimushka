@@ -1,5 +1,4 @@
-"""
-Tests for the export.py module.
+"""Tests for the export.py module.
 
 This module contains tests for the functions in the export.py module:
 - _export_html_wasm
@@ -107,7 +106,7 @@ class TestGenerateIndex:
         mock_logger.info.assert_called()
 
     @patch.object(Path, 'open', side_effect=OSError("File error"))
-    def test_generate_index_file_error(self, mock_file_open, temp_output_dir, sample_notebooks_data, mock_logger):
+    def test_generate_index_file_error(self, temp_output_dir, sample_notebooks_data, mock_logger):
         """Test handling of file error during index generation."""
         # Setup
         template_file = Path("template_dir/template.html.j2")
