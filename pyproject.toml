@@ -42,4 +42,3 @@ include = [
     "README.md",
     "src/marimograd"
 ]
-
