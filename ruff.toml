@@ -1,0 +1,67 @@
+# ruff.toml - Configuration for the Ruff linter and formatter
+
+# Target Python version
+target-version = "py312"
+
+# Line length configuration
+line-length = 120
+
+# Enable all recommended rules by default
+lint.select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "NPY", # NumPy-specific rules
+    "RUF", # Ruff-specific rules
+]
+
+# Ignore specific rules
+lint.ignore = [
+    "E203",  # Whitespace before ':' (conflicts with black)
+    "E501",  # Line too long (handled by formatter)
+    "B905",  # `zip()` without an explicit `strict=` parameter (requires Python 3.10+)
+]
+
+# Allow unused variables when they start with an underscore
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Exclude certain directories and files
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+# Automatically fix violations where possible
+fix = true
+# Show source code snippets with errors
+# show-source = true
+# Show error codes
+show-fixes = true
+
+# Configure specific rules
+[lint.per-file-ignores]
+"tests/*" = ["ARG", "S101"]  # Allow assert statements and unused arguments in tests
+"notebooks/*" = ["E402"]     # Allow imports not at top of file in notebooks
+
+# Import sorting configuration
+[lint.isort]
+known-first-party = ["solver"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+# Formatter configuration
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
