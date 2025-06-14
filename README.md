@@ -8,14 +8,6 @@
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/tschm/marimograd)
 
-
-## 🛠️ Development Commands
-
-```bash
-make tests   # Run test suite
-make marimo  # Start Marimo notebooks
-```
-
 ## 👥 Contributing
 
 - 🍴 Fork the repository

@@ -21,12 +21,10 @@ The exported files will be placed in the specified output directory (default: _s
 # ///
 
 import subprocess
-from typing import List, Union
 from pathlib import Path
 
-import jinja2
 import fire
-
+import jinja2
 from loguru import logger
 
 # Configure logging
@@ -36,6 +34,7 @@ from loguru import logger
 #    datefmt='%Y-%m-%d %H:%M:%S'
 # )
 # logger = logging.getLogger("marimo-build")
+
 
 def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = False) -> bool:
     """Export a single marimo notebook to HTML/WebAssembly format.
@@ -57,7 +56,7 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
     output_path: Path = notebook_path.with_suffix(".html")
 
     # Base command for marimo export
-    cmd: List[str] = ["uvx", "marimo", "export", "html-wasm", "--sandbox"]
+    cmd: list[str] = ["uvx", "marimo", "export", "html-wasm", "--sandbox"]
 
     # Configure export mode based on whether it's an app or a notebook
     if as_app:
@@ -91,7 +90,9 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
         return False
 
 
-def _generate_index(output_dir: Path, template_file: Path, notebooks_data: List[dict] | None = None, apps_data: List[dict] | None = None) -> None:
+def _generate_index(
+    output_dir: Path, template_file: Path, notebooks_data: list[dict] | None = None, apps_data: list[dict] | None = None
+) -> None:
     """Generate an index.html file that lists all the notebooks.
 
     This function creates an HTML index page that displays links to all the exported
@@ -120,8 +121,7 @@ def _generate_index(output_dir: Path, template_file: Path, notebooks_data: List[
         template_dir = template_file.parent
         template_name = template_file.name
         env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(template_dir),
-            autoescape=jinja2.select_autoescape(["html", "xml"])
+            loader=jinja2.FileSystemLoader(template_dir), autoescape=jinja2.select_autoescape(["html", "xml"])
         )
         template = env.get_template(template_name)
 
@@ -133,7 +133,7 @@ def _generate_index(output_dir: Path, template_file: Path, notebooks_data: List[
             f.write(rendered_html)
         logger.info(f"Successfully generated index.html at {index_path}")
 
-    except IOError as e:
+    except OSError as e:
         # Handle file I/O errors
         logger.error(f"Error generating index.html: {e}")
     except jinja2.exceptions.TemplateError as e:
@@ -141,7 +141,7 @@ def _generate_index(output_dir: Path, template_file: Path, notebooks_data: List[
         logger.error(f"Error rendering template: {e}")
 
 
-def _export(folder: Path, output_dir: Path, as_app: bool=False) -> List[dict]:
+def _export(folder: Path, output_dir: Path, as_app: bool = False) -> list[dict]:
     """Export all marimo notebooks in a folder to HTML/WebAssembly format.
 
     This function finds all Python files in the specified folder and exports them
@@ -183,9 +183,10 @@ def _export(folder: Path, output_dir: Path, as_app: bool=False) -> List[dict]:
     logger.info(f"Successfully exported {len(notebook_data)} out of {len(notebooks)} files from {folder}")
     return notebook_data
 
+
 def main(
-    output_dir: Union[str, Path] = "_site",
-    template: Union[str, Path] = "templates/index.html.j2",
+    output_dir: str | Path = "_site",
+    template: str | Path = "templates/index.html.j2",
 ) -> None:
     """Main function to export marimo notebooks.
 
@@ -226,11 +227,12 @@ def main(
         return
 
     # Generate the index.html file that lists all notebooks and apps
-    _generate_index(output_dir=output_dir, notebooks_data=notebooks_data, apps_data=apps_data, template_file=template_file)
+    _generate_index(
+        output_dir=output_dir, notebooks_data=notebooks_data, apps_data=apps_data, template_file=template_file
+    )
 
     logger.info(f"Build completed successfully. Output directory: {output_dir}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     fire.Fire(main)
-

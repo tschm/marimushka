@@ -21,9 +21,7 @@ install: venv ## Install a virtual environment
 # Mark 'fmt' as a phony target
 .PHONY: fmt
 fmt: venv ## Run autoformatting and linting
-	@uv pip install pre-commit  # Install pre-commit in the virtual environment
-	@uv run pre-commit install  # Install pre-commit hooks in the git repository
-	@uv run pre-commit run --all-files  # Run all pre-commit hooks on all files
+	@uvx pre-commit run --all-files  # Run all pre-commit hooks on all files
 
 
 # Mark 'clean' as a phony target
@@ -48,10 +46,3 @@ help:  ## Display this help screen
 marimo: install ## Install Marimo
 	@uv pip install marimo  # Install Marimo interactive notebook tool
 	@uv run marimo edit book/marimo  # Start Marimo in edit mode, opening the book/marimo directory
-
-
-# Mark 'test' as a phony target
-.PHONY: test
-test: install  ## Run pytests
-	@uv pip install pytest  # Install pytest testing framework
-	@uv run pytest src/tests  # Run all tests in the src/tests directory
