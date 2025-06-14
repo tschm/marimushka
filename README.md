@@ -5,7 +5,6 @@
 [![Created with qCradle](https://img.shields.io/badge/Created%20with-qCradle-blue?style=flat-square)](https://github.com/tschm/package)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tschm/marimushka/release.yml?label=release)](https://github.com/tschm/marimushka/actions/workflows/release.yml)
-[![PyPI Downloads](https://img.shields.io/pypi/dm/marimushka)](https://pypi.org/project/marimushka/)
 [![GitHub stars](https://img.shields.io/github/stars/tschm/marimushka)](https://github.com/tschm/marimushka/stargazers)
 
 ## 🚀 Overview
