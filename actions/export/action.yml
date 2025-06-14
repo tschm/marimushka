@@ -47,7 +47,7 @@ runs:
         echo "Using temporary directory: $TMP_DIR"
 
         uvx marimushka --template "$TEMPLATE" \ 
-                       --output-dir "$TMP_DIR" \ 
+                       --output_dir "$TMP_DIR" \ 
                        --apps=${{ inputs.apps }} \
                        --notebooks=${{ inputs.notebooks }}
 
