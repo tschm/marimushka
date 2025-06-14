@@ -1,41 +1,58 @@
-name: 'Export notebook using marimo'
+name: 'Export marimo notebooks using marimushka'
 description: 'Export of notebooks and apps'
 
 inputs:
   template:
-    description: 'html.j2 template for export'
+    description: 'The html.j2 template for export'
     required: false
 
 runs:
   using: "composite"
   steps:
-      - name: 📦 Checkout repository
-        uses: actions/checkout@v4
+    - name: 📦 Checkout repository
+      uses: actions/checkout@v4
 
-      - name: 🚀 Install uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          python-version: '3.12'
+    - name: 🚀 Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        python-version: '3.12'
 
-      - name: 🛠️ Export notebooks to WebAssembly
-        shell: bash
-        run: |
-          # Path to default template in this action's directory
-          DEFAULT_TEMPLATE="${GITHUB_ACTION_PATH}/templates/default.html.j2"
+    - name: 🛠️ Export marimo notebooks to WebAssembly
+      shell: bash
+      run: |
+        # Path to default template in this action's directory
+        DEFAULT_TEMPLATE="${GITHUB_ACTION_PATH}/templates/default.html.j2"
 
-          # Use provided template if set, otherwise fallback
+        # Use provided template if set, otherwise fallback
+        if [ -z "${{ inputs.template }}" ]; then
+          echo "No template provided. Using default: $DEFAULT_TEMPLATE"
+          TEMPLATE="$DEFAULT_TEMPLATE"
+        else
+          echo "Using provided template: ${{ inputs.template }}"
           TEMPLATE="${{ inputs.template }}"
-          if [ -z "$TEMPLATE" ]; then
-            echo "No template provided. Using default: $DEFAULT_TEMPLATE"
-            TEMPLATE="$DEFAULT_TEMPLATE"
-          else
-            echo "Using provided template: $TEMPLATE"
-          fi
+        fi
 
-          uvx marimograd --template "$TEMPLATE"
+        # Create a random temporary directory
+        TMP_DIR=$(mktemp -d)
+        echo "Using temporary directory: $TMP_DIR"
 
-      # Upload the generated site as an artifact for the deploy job
-      - name: 📤 Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site  # Directory containing the built site
+        # Export notebooks to the temporary directory
+        uvx marimushka --template "$TEMPLATE" --output-dir "$TMP_DIR"
+
+        # Save the temp directory for the next step
+        echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
+
+    - name: 📤 Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: ${{ env.TMP_DIR }}
+
+    - name: 🧹 Clean up temporary folder
+      shell: bash
+      run: |
+        if [ -d "${{ env.TMP_DIR }}" ]; then
+          echo "Deleting temp dir: ${{ env.TMP_DIR }}"
+          rm -rf "${{ env.TMP_DIR }}"
+        else
+          echo "Temp dir already gone or not set."
+        fi
