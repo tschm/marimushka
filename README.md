@@ -122,22 +122,10 @@ Then you can run the tests using pytest:
 
 ```bash
 # Run tests with pytest
-pytest tests/ -v
+uv run pytest tests/ -v
 
 # Or use the make command
 make test
-```
-
-### Cleaning Output Directories
-
-When you run marimushka, it creates output directories (`_site`, `custom_output`, or `output_dir` depending on your configuration). To clean these directories, you can use:
-
-```bash
-# Clean all output directories
-make clean-output
-
-# Clean all ignored files (including output directories)
-make clean
 ```
 
 ## 📄 License
