@@ -1,0 +1,51 @@
+name: Marimo Notebook CI
+
+on:
+  workflow_call:
+    inputs:
+      notebook-dir:
+        required: true
+        type: string
+    secrets: {}
+
+jobs:
+  list-notebooks:
+    name: List Marimo Notebooks
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.set-notebooks.outputs.notebooks }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: List notebooks
+        id: set-notebooks
+        run: |
+          cd "${{ inputs.notebook-dir }}"
+          NOTEBOOKS=$(find . -type f -name '*.py' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "notebooks=$NOTEBOOKS" >> $GITHUB_OUTPUT
+
+  run-notebooks:
+    name: Run ${{ matrix.notebook }}
+    needs: list-notebooks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        notebook: ${{ fromJson(needs.list-notebooks.outputs.notebooks) }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: 3.13
+
+      - name: Run notebook
+        run: |
+          uvx marimo run "${{ matrix.notebook }}" --sandbox --no-browser &
+          pid=$!
+          sleep 1
+          kill $pid
+        working-directory: ${{ inputs.notebook-dir }}
