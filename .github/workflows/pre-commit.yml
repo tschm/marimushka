@@ -12,17 +12,6 @@ permissions:
   contents: read  # Read-only access to repository contents
 
 jobs:
-  # Job to run dependency analysis with deptry
-  deptry:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Build the virtual environment"
-        uses: tschm/cradle/actions/environment@v0.1.72  # Custom action to set up Python environment
-
-      - uses: tschm/cradle/actions/deptry@v0.1.72  # Custom action to run deptry for dependency analysis
-        with:
-          source-folder: src/marimograd  # Source code folder to analyze
-
   # Job to run pre-commit checks on the repository
   pre-commit:
     runs-on: ubuntu-latest

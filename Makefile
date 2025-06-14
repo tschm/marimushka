@@ -15,7 +15,7 @@ venv:
 .PHONY: install
 install: venv ## Install a virtual environment
 	@uv pip install --upgrade pip  # Ensure pip is up to date
-	@uv sync --all-extras --dev --frozen  # Install all dependencies from pyproject.toml
+	@uv sync --frozen  # Install all dependencies from pyproject.toml
 
 
 # Mark 'fmt' as a phony target
