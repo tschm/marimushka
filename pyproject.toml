@@ -31,7 +31,7 @@ build-backend = "hatchling.build"
 
 # Entry points for command-line scripts
 [project.scripts]
-marimograd = "export:cli"
+marimograd = "marimograd.export:cli"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/marimograd"]
