@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Build the virtual environment"
-        uses: tschm/cradle/actions/environment@v0.1.68  # Custom action to set up Python environment
+        uses: tschm/cradle/actions/environment@v0.1.72  # Custom action to set up Python environment
 
-      - uses: tschm/cradle/actions/deptry@v0.1.68  # Custom action to run deptry for dependency analysis
+      - uses: tschm/cradle/actions/deptry@v0.1.72  # Custom action to run deptry for dependency analysis
         with:
           source-folder: src/marimograd  # Source code folder to analyze
 
@@ -27,4 +27,4 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: tschm/cradle/actions/pre-commit@v0.1.68  # Custom action to run pre-commit checks
+      - uses: tschm/cradle/actions/pre-commit@v0.1.72  # Custom action to run pre-commit checks
