@@ -31,7 +31,7 @@ jobs:
           uv run pytest src/tests/ -v --cov=src/marimushka
 
   make:
-    name: Run Python Tests
+    name: Run tests via make
     runs-on: ubuntu-latest
 
     steps:
