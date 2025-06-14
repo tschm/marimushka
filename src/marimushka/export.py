@@ -21,12 +21,12 @@ The exported files will be placed in the specified output directory (default: _s
 # ///
 
 import subprocess
+from logging import Logger
 from pathlib import Path
 
 import fire
 import jinja2
 from loguru import logger
-from logging import Logger
 
 
 def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = False, logger_instance=logger) -> bool:
@@ -85,8 +85,11 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
 
 
 def _generate_index(
-    output_dir: Path, template_file: Path, notebooks_data: list[dict] | None = None, apps_data: list[dict] | None = None,
-    logger_instance=logger
+    output_dir: Path,
+    template_file: Path,
+    notebooks_data: list[dict] | None = None,
+    apps_data: list[dict] | None = None,
+    logger_instance=logger,
 ) -> None:
     """Generate an index.html file that lists all the notebooks.
 
@@ -125,7 +128,7 @@ def _generate_index(
         rendered_html = template.render(notebooks=notebooks_data, apps=apps_data)
 
         # Write the rendered HTML to the index.html file
-        with open(index_path, "w") as f:
+        with Path.open(index_path, "w") as f:
             f.write(rendered_html)
         logger_instance.info(f"Successfully generated index.html at {index_path}")
 
@@ -186,7 +189,7 @@ def main(
     template: str | Path = "templates/index.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
-    logger_instance: Logger | None = None
+    logger_instance: Logger | None = None,
 ) -> None:
     """Main function to export marimo notebooks.
 
@@ -236,7 +239,7 @@ def main(
         notebooks_data=notebooks_data,
         apps_data=apps_data,
         template_file=template_file,
-        logger_instance=logger_instance
+        logger_instance=logger_instance,
     )
 
     logger_instance.info(f"Build completed successfully. Output directory: {output_dir}")

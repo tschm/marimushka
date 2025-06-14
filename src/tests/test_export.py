@@ -11,17 +11,11 @@ This module contains tests for the functions in the export.py module:
 
 import subprocess
 from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import MagicMock, mock_open, patch
 
 import jinja2
 
-from marimushka.export import (
-    _export_html_wasm,
-    _generate_index,
-    _export,
-    main,
-    cli
-)
+from marimushka.export import _export, _export_html_wasm, _generate_index, cli, main
 
 
 class TestExportHtmlWasm:
@@ -89,7 +83,7 @@ class TestExportHtmlWasm:
 class TestGenerateIndex:
     """Tests for the _generate_index function."""
 
-    @patch('builtins.open', new_callable=mock_open)
+    @patch.object(Path, 'open', new_callable=mock_open)
     @patch('jinja2.Environment')
     def test_generate_index_success(self, mock_env, mock_file_open, temp_output_dir, sample_notebooks_data, sample_apps_data, mock_logger):
         """Test successful generation of index.html."""
@@ -112,7 +106,7 @@ class TestGenerateIndex:
         mock_file_open().write.assert_called_once_with("<html>Rendered content</html>")
         mock_logger.info.assert_called()
 
-    @patch('builtins.open', side_effect=OSError("File error"))
+    @patch.object(Path, 'open', side_effect=OSError("File error"))
     def test_generate_index_file_error(self, mock_file_open, temp_output_dir, sample_notebooks_data, mock_logger):
         """Test handling of file error during index generation."""
         # Setup
@@ -150,25 +144,24 @@ class TestExport:
         folder = Path("notebooks")
 
         # Mock Path.exists and Path.rglob
-        with patch.object(Path, 'exists', return_value=True):
-            with patch.object(Path, 'rglob', return_value=[
-                Path("notebooks/notebook1.py"),
-                Path("notebooks/notebook2.py")
-            ]):
-                # Mock successful export for all notebooks
-                mock_export_html_wasm.return_value = True
+        with patch.object(Path, 'exists', return_value=True), patch.object(Path, 'rglob', return_value=[
+            Path("notebooks/notebook1.py"),
+            Path("notebooks/notebook2.py")
+        ]):
+            # Mock successful export for all notebooks
+            mock_export_html_wasm.return_value = True
 
-                # Execute
-                result = _export(folder, temp_output_dir, logger_instance=mock_logger)
+            # Execute
+            result = _export(folder, temp_output_dir, logger_instance=mock_logger)
 
-                # Assert
-                assert len(result) == 2
-                assert result[0]["display_name"] == "notebook1"
-                assert result[0]["html_path"] == "notebooks/notebook1.html"
-                assert result[1]["display_name"] == "notebook2"
-                assert result[1]["html_path"] == "notebooks/notebook2.html"
-                assert mock_export_html_wasm.call_count == 2
-                mock_logger.info.assert_called()
+            # Assert
+            assert len(result) == 2
+            assert result[0]["display_name"] == "notebook1"
+            assert result[0]["html_path"] == "notebooks/notebook1.html"
+            assert result[1]["display_name"] == "notebook2"
+            assert result[1]["html_path"] == "notebooks/notebook2.html"
+            assert mock_export_html_wasm.call_count == 2
+            mock_logger.info.assert_called()
 
     def test_export_folder_not_found(self, temp_output_dir, mock_logger):
         """Test handling of non-existent folder."""
@@ -190,14 +183,13 @@ class TestExport:
         folder = Path("empty_folder")
 
         # Mock Path.exists and Path.rglob
-        with patch.object(Path, 'exists', return_value=True):
-            with patch.object(Path, 'rglob', return_value=[]):
-                # Execute
-                result = _export(folder, temp_output_dir, logger_instance=mock_logger)
+        with patch.object(Path, 'exists', return_value=True), patch.object(Path, 'rglob', return_value=[]):
+            # Execute
+            result = _export(folder, temp_output_dir, logger_instance=mock_logger)
 
-                # Assert
-                assert result == []
-                mock_logger.warning.assert_called()
+            # Assert
+            assert result == []
+            mock_logger.warning.assert_called()
 
     @patch('marimushka.export._export_html_wasm')
     def test_export_partial_success(self, mock_export_html_wasm, temp_output_dir, mock_logger):
@@ -206,23 +198,22 @@ class TestExport:
         folder = Path("notebooks")
 
         # Mock Path.exists and Path.rglob
-        with patch.object(Path, 'exists', return_value=True):
-            with patch.object(Path, 'rglob', return_value=[
-                Path("notebooks/notebook1.py"),
-                Path("notebooks/notebook2.py")
-            ]):
-                # Mock success for first notebook, failure for second
-                mock_export_html_wasm.side_effect = [True, False]
+        with patch.object(Path, 'exists', return_value=True), patch.object(Path, 'rglob', return_value=[
+            Path("notebooks/notebook1.py"),
+            Path("notebooks/notebook2.py")
+        ]):
+            # Mock success for first notebook, failure for second
+            mock_export_html_wasm.side_effect = [True, False]
 
-                # Execute
-                result = _export(folder, temp_output_dir, logger_instance=mock_logger)
+            # Execute
+            result = _export(folder, temp_output_dir, logger_instance=mock_logger)
 
-                # Assert
-                assert len(result) == 1
-                assert result[0]["display_name"] == "notebook1"
-                assert result[0]["html_path"] == "notebooks/notebook1.html"
-                assert mock_export_html_wasm.call_count == 2
-                mock_logger.info.assert_called()
+            # Assert
+            assert len(result) == 1
+            assert result[0]["display_name"] == "notebook1"
+            assert result[0]["html_path"] == "notebooks/notebook1.html"
+            assert mock_export_html_wasm.call_count == 2
+            mock_logger.info.assert_called()
 
 
 class TestMain:
