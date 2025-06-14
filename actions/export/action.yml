@@ -4,23 +4,35 @@ description: 'Export of notebooks and apps'
 inputs:
   template:
     description: 'html.j2 template for export'
-    required: true
+    required: false
 
 runs:
   using: "composite"
   steps:
-      # Check out the repository code
-      - uses: actions/checkout@v4
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
 
-      # Install uv package manager for faster Python package installation
       - name: 🚀 Install uv
         uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
 
-      # Run the build script to export notebooks to WebAssembly
-      - name: 🛠️ Export notebooks
+      - name: 🛠️ Export notebooks to WebAssembly
         shell: bash
         run: |
-          uvx marimograd --template ${{inputs.template}}
+          # Path to default template in this action's directory
+          DEFAULT_TEMPLATE="${GITHUB_ACTION_PATH}/templates/default.html.j2"
+  
+          # Use provided template if set, otherwise fallback
+          TEMPLATE="${{ inputs.template }}"
+          if [ -z "$TEMPLATE" ]; then
+            echo "No template provided. Using default: $DEFAULT_TEMPLATE"
+            TEMPLATE="$DEFAULT_TEMPLATE"
+          else
+            echo "Using provided template: $TEMPLATE"
+          fi
+  
+          uvx marimograd --template "$TEMPLATE"
 
       # Upload the generated site as an artifact for the deploy job
       - name: 📤 Upload artifact
