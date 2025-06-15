@@ -100,7 +100,7 @@ def _generate_index(
     Args:
         notebooks_data (List[dict]): List of dictionaries with data for notebooks
         apps_data (List[dict]): List of dictionaries with data for apps
-        output_dir (Path): Directory where the index.html file will be saved
+        output (Path): Directory where the index.html file will be saved
         template_file (Path, optional): Path to the template file. If None, uses the default template.
         logger_instance: Logger instance to use. Defaults to the standard logger.
 
@@ -111,10 +111,10 @@ def _generate_index(
     logger_instance.info("Generating index.html")
 
     # Create the full path for the index.html file
-    index_path: Path = Path(output_dir) / "index.html"
+    index_path: Path = Path(output) / "index.html"
 
     # Ensure the output directory exists
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    Path(output).mkdir(parents=True, exist_ok=True)
 
     try:
         print(template_file)
