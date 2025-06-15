@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 from marimushka.export import main
 
+
 @patch('marimushka.export._export')
 @patch('marimushka.export._generate_index')
 def test_main_no_notebooks_or_apps(mock_generate_index, mock_export, tmp_path, mock_logger):
