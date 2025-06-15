@@ -35,6 +35,7 @@ def _folder2notebooks(folder: Path | None, is_app: bool) -> list[Notebook]:
         return []
 
     notebooks = list(Path(folder).rglob("*.py"))
+    print(notebooks)
     return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
 
@@ -147,6 +148,9 @@ def main(
     logger_instance.info(f"Using template file: {template_file}")
     logger_instance.info(f"Notebooks: {notebooks}")
     logger_instance.info(f"Apps: {apps}")
+
+    logger_instance.info(f"is apps none? {apps is None}")
+    logger_instance.info(f"is notebooks none? {apps is None}")
 
     notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
     apps_data = _folder2notebooks(folder=apps, is_app=True)
