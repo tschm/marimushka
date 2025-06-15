@@ -26,6 +26,7 @@ import fire
 import jinja2
 from loguru import logger
 
+import marimushka
 from marimushka.notebook import Notebook
 
 
@@ -133,7 +134,7 @@ def main(
         logger_instance = logger
 
     logger_instance.info("Starting marimushka build process")
-
+    logger_instance.info(f"Version of Marimushka: {marimushka.__version__}")
     output = output or "_site"
 
     # Convert output_dir explicitly to Path (not done by fire)

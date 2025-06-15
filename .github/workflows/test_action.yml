@@ -43,6 +43,7 @@ jobs:
       - name: "Build the virtual environment for ${{ github.repository }}"
         uses: ./actions/export
         with:
+          # only folder for notebooks, no apps shall be compiled
           notebooks: 'src/tests/resources/notebooks'
 
 
