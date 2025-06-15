@@ -66,4 +66,4 @@ jobs:
       # Step 2: Display the help screen
       - name: Display help
         run: |
-          uvx marimushka --help
+          uv run marimushka --help
