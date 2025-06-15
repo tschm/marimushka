@@ -30,6 +30,7 @@ runs:
       run: |
         set -e  # Exit on error
       
+        uv venv
         uv pip install marimushka
         
         # Path to default template in this action's directory
