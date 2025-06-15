@@ -51,3 +51,19 @@ jobs:
           else
             echo "✅ Template file found."
           fi
+
+  help:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: 3.13
+
+      # Step 2: Display the help screen
+      - name: Display help
+        run: |
+          uvx marimushka --help
