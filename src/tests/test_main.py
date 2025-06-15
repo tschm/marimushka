@@ -1,3 +1,4 @@
+"""Tests for the main.py module."""
 from unittest.mock import patch
 
 from marimushka.export import main

@@ -1,9 +1,11 @@
+"""Test complete marimushka build process."""
 from loguru import logger
 
 from marimushka.export import main
 
 
 def test_complete(resource_dir, tmp_path):
+    """Test complete marimushka build process."""
     main(notebooks=resource_dir / "notebooks",
          apps=resource_dir / "apps",
          template=resource_dir / "templates" / "default.html.j2",

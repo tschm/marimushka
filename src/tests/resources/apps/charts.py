@@ -1,3 +1,4 @@
+"""Interactive Data Visualization."""
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
@@ -37,7 +38,8 @@ def _():
 @app.cell
 def _():
     # Create sample data
-    data = pd.DataFrame({"x": np.arange(100), "y": np.random.normal(0, 1, 100)})
+    rng = np.random.default_rng()
+    data = pd.DataFrame({"x": np.arange(100), "y": rng.normal(0, 1, 100)})
 
     # Create interactive chart
     chart = mo.ui.altair_chart(

@@ -1,3 +1,5 @@
+"""Palmer Penguins Analysis."""
+
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [

@@ -1,3 +1,4 @@
+"""Tests for the _generate_index function."""
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 

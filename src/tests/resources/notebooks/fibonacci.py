@@ -1,3 +1,4 @@
+"""Fibonacci Calculator."""
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
@@ -39,6 +40,7 @@ def _(n):
 
 @app.function
 def fibonacci(n):
+    """Calculate the first n numbers in the Fibonacci sequence."""
     sequence = [0, 1]
     for i in range(2, n):
         sequence.append(sequence[i - 1] + sequence[i - 2])
