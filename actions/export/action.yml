@@ -8,11 +8,9 @@ inputs:
   apps:
     description: 'The apps folder'
     required: false
-    #default: 'apps'
   notebooks:
-    description: 'The notebook folder'
+    description: 'The notebooks folder'
     required: false
-    #default: 'notebooks'
 
 runs:
   using: "composite"
@@ -30,6 +28,8 @@ runs:
     - name: 🛠️ Export marimo notebooks to WebAssembly
       shell: bash
       run: |
+        set -e  # Exit on error
+
         # Path to default template in this action's directory
         DEFAULT_TEMPLATE="${GITHUB_ACTION_PATH}/templates/default.html.j2"
 
@@ -42,29 +42,28 @@ runs:
           TEMPLATE="${{ inputs.template }}"
         fi
 
-        # Create a random temporary directory
-        #TMP_DIR=$(mktemp -d)
-        #echo "Using temporary directory: $TMP_DIR"
-        echo "Using as template: $TEMPLATE"
+        # Output directory
+        OUTPUT_DIR="/tmp/marimushka"
+        mkdir -p "$OUTPUT_DIR"
 
-        uvx marimushka --help
+        echo "Using template: $TEMPLATE"
+        echo "Exporting to: $OUTPUT_DIR"
+        echo "Apps: ${{ inputs.apps }}"
+        echo "Notebooks: ${{ inputs.notebooks }}"
 
-        uvx marimushka --template="$TEMPLATE" \
-                       --output ="/tmp/marimushka" \
-                       --apps="${{ inputs.apps }}" \
-                       --notebooks="${{ inputs.notebooks }}"
+        uvx marimushka \
+          --template "$TEMPLATE" \
+          --output "$OUTPUT_DIR" \
+          --apps "${{ inputs.apps }}" \
+          --notebooks "${{ inputs.notebooks }}"
 
-        # Save the temp directory for the next step
-        # echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
-        
-        #tree $TMP_DIR
-
-    - name: check the output
+    - name: 📂 Check the output structure
       shell: bash
       run: |
-        tree /tmp/marimushka
+        echo "Output directory contents:"
+        tree /tmp/marimushka || echo "(tree not installed)"
 
-    - name: Upload HTML artifacts
+    - name: 📤 Upload HTML artifacts
       if: ${{ env.ACT != 'true' }}  # Skip if running with 'act'
       uses: actions/upload-artifact@v4
       with:
