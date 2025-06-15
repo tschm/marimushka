@@ -20,11 +20,6 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
 
-      - name: Current path
-        run: |
-          ls -all
-          pwd
-
       # Step 2: Build the virtual environment with the specified Python version
       - name: "Build the virtual environment for ${{ github.repository }}"
         uses: ./actions/export
