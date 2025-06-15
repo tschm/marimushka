@@ -164,6 +164,16 @@ from processing with Jekyll
 Note: To use the publish feature, your repository needs to have GitHub Pages
 enabled and configured to use the `gh-pages` branch.
 
+Additionally, your workflow will need the following permissions:
+
+```yaml
+permissions:
+  contents: write  # Required for GitHub Pages deployment
+```
+
+This is necessary because the action needs write access to the repository contents
+to create or update the `gh-pages` branch.
+
 ## 🎨 Customizing Templates
 
 Marimushka uses Jinja2 templates to generate the index.html file.

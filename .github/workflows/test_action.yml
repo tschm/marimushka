@@ -7,7 +7,7 @@ on:
   push:  # Trigger on push events
 
 permissions:
-  contents: read  # Read-only access to repository contents
+  contents: write  # Write access to repository contents for GitHub Pages deployment
 
 jobs:
 #  test:
