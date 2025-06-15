@@ -45,6 +45,7 @@ runs:
         # Create a random temporary directory
         TMP_DIR=$(mktemp -d)
         echo "Using temporary directory: $TMP_DIR"
+        echo "Using as template: $TEMPLATE"
 
         uvx marimushka --template="$TEMPLATE" \
                        --output="$TMP_DIR" \

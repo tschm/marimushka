@@ -52,8 +52,7 @@ show-fixes = true
 
 # Configure specific rules
 [lint.per-file-ignores]
-"tests/*" = ["ARG", "S101"]  # Allow assert statements and unused arguments in tests
-"notebooks/*" = ["E402"]     # Allow imports not at top of file in notebooks
+"src/tests/*" = ["ARG", "S101", "B018"]  # Allow assert statements and unused arguments in tests
 
 # Import sorting configuration
 [lint.isort]

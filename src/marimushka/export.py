@@ -62,7 +62,7 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
 
     try:
         # Create the full output path and ensure the directory exists
-        output_file: Path = output_dir / notebook_path.with_suffix(".html")
+        output_file: Path = output_dir / f"{notebook_path.stem}.html"
         output_file.parent.mkdir(parents=True, exist_ok=True)
 
         # Add the notebook path and output file to command
@@ -172,14 +172,19 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
         logger_instance.warning(f"No notebooks found in {folder}!")
         return []
 
+    for nb in notebooks:
+        logger.info(f"Exporting {nb} to {output_dir}")
+
     # For each successfully exported notebook, add its data to the notebook_data list
+    p = Path("apps") if as_app else Path("notebooks")
+
     notebook_data = [
         {
             "display_name": (nb.stem.replace("_", " ")),
-            "html_path": str(nb.with_suffix(".html")),
+            "html_path": p / f"{nb.stem}.html",
         }
         for nb in notebooks
-        if _export_html_wasm(nb, output_dir, as_app=as_app, logger_instance=logger_instance)
+        if _export_html_wasm(nb, output_dir=output_dir, as_app=as_app, logger_instance=logger_instance)
     ]
 
     logger_instance.info(f"Successfully exported {len(notebook_data)} out of {len(notebooks)} files from {folder}")
@@ -188,7 +193,7 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
 
 def main(
     output: str | Path = "_site",
-    template: str | Path = "templates/index.html.j2",
+    template: str | Path = "templates/default.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
     logger_instance: Logger | None = None,
@@ -219,17 +224,21 @@ def main(
     logger_instance.info(f"Output directory: {output}")
 
     # Make sure the output directory exists
-    output.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     # Convert template to Path if provided
     template_file: Path = Path(template)
     logger_instance.info(f"Using template file: {template_file}")
 
+    logger_instance.info(f"Output directory for notebooks: {output_dir / 'notebooks'}")
     # Export notebooks from the notebooks/ directory
-    notebooks_data = _export(Path(notebooks), output, as_app=False, logger_instance=logger_instance)
+    notebooks_data = _export(
+        folder=Path(notebooks), output_dir=output_dir / "notebooks", as_app=False, logger_instance=logger_instance
+    )
 
+    logger_instance.info(f"Output directory for notebooks: {output_dir / 'apps'}")
     # Export apps from the apps/ directory
-    apps_data = _export(Path(apps), output, as_app=True, logger_instance=logger_instance)
+    apps_data = _export(folder=Path(apps), output_dir=output_dir / "apps", as_app=True, logger_instance=logger_instance)
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
