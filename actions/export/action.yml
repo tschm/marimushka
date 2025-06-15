@@ -13,6 +13,10 @@ inputs:
     description: 'The notebooks folder'
     required: false
     default: 'notebooks'
+  publish:
+    description: 'Whether to publish the exported notebooks to GitHub Pages'
+    required: false
+    default: 'false'
 
 runs:
   using: "composite"
@@ -52,6 +56,7 @@ runs:
         echo "Exporting to: $OUTPUT_DIR"
         echo "Apps: ${{ inputs.apps }}"
         echo "Notebooks: ${{ inputs.notebooks }}"
+        echo "Publish: ${{ inputs.publish }}"
 
         uvx marimushka \
           --template "$TEMPLATE" \
@@ -59,11 +64,17 @@ runs:
           --apps "${{ inputs.apps }}" \
           --notebooks "${{ inputs.notebooks }}"
 
-    #- name: 📂 Check the output structure
-    #  shell: bash
-    #  run: |
-    #    echo "Output directory contents:"
-    #    tree /tmp/marimushka || echo "(tree not installed)"
+        # If publish is true, perform additional steps for GitHub Pages
+        if [ "${{ inputs.publish }}" = "true" ]; then
+          echo "Performing additional steps for publishing to GitHub Pages..."
+
+          # Create .nojekyll file to prevent GitHub Pages from processing with Jekyll
+          touch "$OUTPUT_DIR/.nojekyll"
+          echo "Created .nojekyll file"
+
+          echo "Additional publishing steps completed"
+        fi
+
 
     - name: 📤 Upload HTML artifacts
       uses: actions/upload-artifact@v4
@@ -71,3 +82,11 @@ runs:
         name: marimo
         path: /tmp/marimushka
         retention-days: 1
+
+    - name: 🌐 Deploy to GitHub Pages
+      if: ${{ inputs.publish == 'true' }}
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: /tmp/marimushka
+        branch: gh-pages
+        clean: true

@@ -45,6 +45,8 @@ jobs:
         with:
           # only folder for notebooks, no apps shall be compiled
           notebooks: 'src/tests/resources/notebooks'
+          apps: ''
+          publish: 'true'
 
   template:
     runs-on: ubuntu-latest
