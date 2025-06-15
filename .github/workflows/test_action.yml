@@ -34,6 +34,23 @@ jobs:
           template: 'src/tests/resources/templates/default.html.j2'
 
 
+  test-only-notebooks:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+
+      # Step 2: Build the virtual environment with the specified Python version
+      - name: "Build the virtual environment for ${{ github.repository }}"
+        uses: ./actions/export
+        with:
+          notebooks: 'src/tests/resources/notebooks'
+
+
   template:
     runs-on: ubuntu-latest
     steps:

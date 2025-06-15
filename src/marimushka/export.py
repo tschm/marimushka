@@ -151,6 +151,9 @@ def main(
     notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
     apps_data = _folder2notebooks(folder=apps, is_app=True)
 
+    logger.info(f"notebooks_data: {notebooks_data}")
+    logger.info(f"apps_data: {apps_data}")
+
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
         logger_instance.warning("No notebooks or apps found!")
