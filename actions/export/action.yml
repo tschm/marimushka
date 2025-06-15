@@ -8,11 +8,11 @@ inputs:
   apps:
     description: 'The apps folder'
     required: false
-    default: 'apps'
+    #default: 'apps'
   notebooks:
     description: 'The notebook folder'
     required: false
-    default: 'notebooks'
+    #default: 'notebooks'
 
 runs:
   using: "composite"
@@ -46,6 +46,8 @@ runs:
         TMP_DIR=$(mktemp -d)
         echo "Using temporary directory: $TMP_DIR"
         echo "Using as template: $TEMPLATE"
+        
+        uvx marimushka --help
 
         uvx marimushka --template="$TEMPLATE" \
                        --output="$TMP_DIR" \
