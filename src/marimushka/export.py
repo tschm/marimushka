@@ -31,15 +31,12 @@ from marimushka.notebook import Notebook
 from . import __version__
 
 
-def _folder2notebooks(folder: Path | None, is_app: bool, logger) -> list[Notebook]:
+def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]:
     """Find all marimo notebooks in a directory."""
-    if folder is None:
+    if folder is None or folder == "":
         return []
 
-    logger.info(f"Folder: {folder}")
     notebooks = list(Path(folder).rglob("*.py"))
-    print(notebooks)
-    logger.info(f"notebooks: {notebooks}")
 
     return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
@@ -154,17 +151,11 @@ def main(
     logger_instance.info(f"Notebooks: {notebooks}")
     logger_instance.info(f"Apps: {apps}")
 
-    print(apps)
-    print(notebooks)
+    notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
+    apps_data = _folder2notebooks(folder=apps, is_app=True)
 
-    logger_instance.info(f"is apps none? {apps is None}")
-    logger_instance.info(f"is notebooks none? {notebooks is None}")
-
-    notebooks_data = _folder2notebooks(folder=notebooks, is_app=False, logger=logger_instance)
-    apps_data = _folder2notebooks(folder=apps, is_app=True, logger=logger_instance)
-
-    logger.info(f"notebooks_data: {notebooks_data}")
-    logger.info(f"apps_data: {apps_data}")
+    logger.info(f"# notebooks_data: {len(notebooks_data)}")
+    logger.info(f"# apps_data: {len(apps_data)}")
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
@@ -177,8 +168,6 @@ def main(
         notebooks=notebooks_data,
         apps=apps_data,
     )
-
-    logger_instance.info(f"Build completed successfully. Output directory: {output_dir}")
 
 
 def cli():

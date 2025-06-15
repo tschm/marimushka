@@ -63,10 +63,10 @@ class Notebook:
 
         # Configure export mode based on whether it's an app or a notebook
         if self.is_app:
-            logger_instance.info(f"Exporting {self.path} as app")
+            logger_instance.info(f"Export {self.path.stem} as app")
             cmd.extend(["--mode", "run", "--no-show-code"])  # Apps run in "run" mode with hidden code
         else:
-            logger_instance.info(f"Exporting {self.path} as notebook")
+            logger_instance.info(f"Export {self.path.stem} as notebook")
             cmd.extend(["--mode", "edit"])  # Notebooks run in "edit" mode
 
         try:
@@ -78,9 +78,9 @@ class Notebook:
             cmd.extend([str(self.path), "-o", str(output_file)])
 
             # Run marimo export command
-            logger_instance.debug(f"Running command: {cmd}")
+            # logger_instance.debug(f"Running command: {cmd}")
             subprocess.run(cmd, capture_output=True, text=True, check=True)
-            logger_instance.info(f"Successfully exported {self.path} to {output_file}")
+            #logger_instance.info(f"Successfully exported {self.path.stem}")
             return True
         except subprocess.CalledProcessError as e:
             # Handle marimo export errors

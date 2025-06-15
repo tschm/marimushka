@@ -26,6 +26,14 @@ class TestFolder2Notebooks:
         # Assert
         assert result == []
 
+    def test_folder2notebooks_empty_string(self):
+        """Test _folder2notebooks with '' folder."""
+        # Execute
+        result = _folder2notebooks(folder='', is_app=False)
+
+        # Assert
+        assert result == []
+
     def test_folder2notebooks_empty(self, tmp_path):
         """Test _folder2notebooks with empty folder."""
         # Setup
