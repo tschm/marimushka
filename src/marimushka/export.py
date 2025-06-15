@@ -200,8 +200,8 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
 def main(
     output: str | Path = "_site",
     template: str | Path = "templates/default.html.j2",
-    notebooks: str | Path = "notebooks",
-    apps: str | Path = "apps",
+    notebooks: str | Path | None = None,
+    apps: str | Path | None = None,
     logger_instance: Logger | None = None,
 ) -> None:
     """Export marimo notebooks.
@@ -227,7 +227,7 @@ def main(
 
     # Convert output_dir explicitly to Path (not done by fire)
     output_dir: Path = Path(output)
-    logger_instance.info(f"Output directory: {output}")
+    logger_instance.info(f"Output directory: {output_dir}")
 
     # Make sure the output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -235,16 +235,23 @@ def main(
     # Convert template to Path if provided
     template_file: Path = Path(template)
     logger_instance.info(f"Using template file: {template_file}")
+    logger_instance.info(f"Notebooks: {notebooks}")
+    logger_instance.info(f"Apps: {apps}")
 
-    logger_instance.info(f"Output directory for notebooks: {output_dir / 'notebooks'}")
+    notebooks_data = None
+    apps_data = None
+
     # Export notebooks from the notebooks/ directory
-    notebooks_data = _export(
-        folder=Path(notebooks), output_dir=output_dir / "notebooks", as_app=False, logger_instance=logger_instance
-    )
+    if notebooks is not None:
+        logger_instance.info(f"Output directory for notebooks: {output_dir / 'notebooks'}")
+        notebooks_data = _export(
+            folder=Path(notebooks), output_dir=output_dir / "notebooks", as_app=False, logger_instance=logger_instance
+        )
 
-    logger_instance.info(f"Output directory for notebooks: {output_dir / 'apps'}")
-    # Export apps from the apps/ directory
-    apps_data = _export(folder=Path(apps), output_dir=output_dir / "apps", as_app=True, logger_instance=logger_instance)
+    if apps is not None:
+        logger_instance.info(f"Output directory for apps: {output_dir / 'apps'}")
+        # Export apps from the apps/ directory
+        apps_data = _export(folder=Path(apps), output_dir=output_dir / "apps", as_app=True, logger_instance=logger_instance)
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:

@@ -29,3 +29,20 @@ jobs:
           template: 'src/tests/resources/templates/default.html.j2'
 
           #python-version: ${{ matrix.python-version }}
+
+  template:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
+
+      # Step 2: Check if the template file exists
+      - name: Check template file exists
+        run: |
+          if [ ! -f src/tests/resources/templates/default.html.j2 ]; then
+            echo "❌ Template file not found!"
+            exit 1
+          else
+            echo "✅ Template file found."
+          fi
