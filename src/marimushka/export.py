@@ -109,10 +109,10 @@ def _generate_index(
 
 
 def main(
-    output: str | Path | None = None,
+    output: str | Path | None = '_site',
     template: str | Path = "templates/default.html.j2",
-    notebooks: str | Path | None = None,
-    apps: str | Path | None = None,
+    notebooks: str | Path | None = 'notebooks',
+    apps: str | Path | None = 'apps',
     logger_instance: Logger | None = None,
 ) -> None:
     """Export marimo notebooks.
