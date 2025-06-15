@@ -85,7 +85,7 @@ def _export_html_wasm(notebook_path: Path, output_dir: Path, as_app: bool = Fals
 
 
 def _generate_index(
-    output_dir: Path,
+    output: Path,
     template_file: Path,
     notebooks_data: list[dict] | None = None,
     apps_data: list[dict] | None = None,
@@ -198,7 +198,7 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
 
 
 def main(
-    output: str | Path = "_site",
+    output: str | Path | None = None,
     template: str | Path = "templates/default.html.j2",
     notebooks: str | Path | None = None,
     apps: str | Path | None = None,
@@ -224,6 +224,8 @@ def main(
         logger_instance = logger
 
     logger_instance.info("Starting marimushka build process")
+
+    output = output or "_site"
 
     # Convert output_dir explicitly to Path (not done by fire)
     output_dir: Path = Path(output)
@@ -262,7 +264,7 @@ def main(
 
     # Generate the index.html file that lists all notebooks and apps
     _generate_index(
-        output_dir=output,
+        output=output_dir,
         notebooks_data=notebooks_data,
         apps_data=apps_data,
         template_file=template_file,
