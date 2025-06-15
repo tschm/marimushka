@@ -13,10 +13,10 @@ __generated_with = "0.13.5"
 app = marimo.App(width="medium")
 
 with app.setup:
-    import marimo as mo
-    import polars as pl
     import altair as alt
+    import marimo as mo
     import pandas as pd
+    import polars as pl
 
     file = mo.notebook_location() / "public" / "penguins.csv"
 

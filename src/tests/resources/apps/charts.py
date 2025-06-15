@@ -13,10 +13,10 @@ __generated_with = "0.10.9"
 app = marimo.App(width="medium")
 
 with app.setup:
-    import numpy as np
     import altair as alt
-    import pandas as pd
     import marimo as mo
+    import numpy as np
+    import pandas as pd
 
 
 @app.cell
@@ -41,12 +41,12 @@ def _():
 
     # Create interactive chart
     chart = mo.ui.altair_chart(
-        (
+
             alt.Chart(data)
             .mark_circle()
             .encode(x="x", y="y", size=alt.value(100), color=alt.value("steelblue"))
             .properties(height=400, title="Interactive Scatter Plot")
-        )
+
     )
     chart
     return chart

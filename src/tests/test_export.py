@@ -91,4 +91,3 @@ def test_export_partial_success( mock_export_html_wasm, temp_output_dir, mock_lo
         assert str(result[0]["html_path"]).endswith("notebook1.html")
         assert mock_export_html_wasm.call_count == 2
         mock_logger.info.assert_called()
-

@@ -176,10 +176,7 @@ def _export(folder: Path, output_dir: Path, as_app: bool = False, logger_instanc
         logger.info(f"Exporting {nb} to {output_dir}")
 
     # For each successfully exported notebook, add its data to the notebook_data list
-    if as_app:
-        p = Path("apps")
-    else:
-        p = Path("notebooks")
+    p = Path("apps") if as_app else Path("notebooks")
 
     notebook_data = [
         {
@@ -235,7 +232,9 @@ def main(
 
     logger_instance.info(f"Output directory for notebooks: {output_dir / 'notebooks'}")
     # Export notebooks from the notebooks/ directory
-    notebooks_data = _export(folder=Path(notebooks), output_dir=output_dir / "notebooks", as_app=False, logger_instance=logger_instance)
+    notebooks_data = _export(
+        folder=Path(notebooks), output_dir=output_dir / "notebooks", as_app=False, logger_instance=logger_instance
+    )
 
     logger_instance.info(f"Output directory for notebooks: {output_dir / 'apps'}")
     # Export apps from the apps/ directory

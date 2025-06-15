@@ -1,5 +1,6 @@
-from marimushka.export import main
 from loguru import logger
+
+from marimushka.export import main
 
 
 def test_complete(resource_dir, tmp_path):

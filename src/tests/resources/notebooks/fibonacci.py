@@ -11,7 +11,7 @@ app = marimo.App()
 
 with app.setup:
     import marimo as mo
-    
+
 @app.cell
 def _():
     mo.md(
@@ -36,14 +36,14 @@ def _():
 def _(n):
     fib = fibonacci(n.value)
     mo.md(", ".join([str(f) for f in fib]))
-    
+
 @app.function
 def fibonacci(n):
     sequence = [0, 1]
     for i in range(2, n):
         sequence.append(sequence[i - 1] + sequence[i - 2])
     return sequence
-    
+
 
 if __name__ == "__main__":
     app.run()

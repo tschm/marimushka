@@ -1,6 +1,6 @@
 """Tests for the _export_html_wasm function."""
 import subprocess
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from marimushka.export import _export_html_wasm
 
