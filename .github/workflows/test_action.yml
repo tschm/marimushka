@@ -1,0 +1,28 @@
+# GitHub Actions workflow for continuous integration
+# This workflow runs tests on multiple operating systems and Python versions
+
+name: "ACTION"
+
+on:
+  push:  # Trigger on push events
+
+permissions:
+  contents: read  # Read-only access to repository contents
+
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    #strategy:
+    #  matrix:
+    #    # Test on multiple operating systems and Python versions
+    #    os: [ ubuntu-latest, macos-latest ]
+    #    python-version: [ '3.10', '3.11', '3.12', '3.13' ]
+
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout ${{ github.repository }}
+        uses: actions/checkout@v4
