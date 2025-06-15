@@ -34,7 +34,7 @@ def _folder2notebooks(folder: Path | None, is_app: bool) -> list[Notebook]:
     if folder is None:
         return []
 
-    notebooks = list(folder.rglob("*.py"))
+    notebooks = list(Path(folder).rglob("*.py"))
     return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
 
