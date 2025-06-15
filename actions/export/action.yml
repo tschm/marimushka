@@ -47,12 +47,12 @@ runs:
         echo "Using temporary directory: $TMP_DIR"
         echo "Using as template: $TEMPLATE"
 
-        uv run marimushka --help
+        uvx marimushka --help
 
-        uv run marimushka --template="$TEMPLATE" \
-                          --output ="$TMP_DIR" \
-                          --apps="${{ inputs.apps }}" \
-                          --notebooks="${{ inputs.notebooks }}"
+        uvx marimushka --template="$TEMPLATE" \
+                       --output ="$TMP_DIR" \
+                       --apps="${{ inputs.apps }}" \
+                       --notebooks="${{ inputs.notebooks }}"
 
         # Save the temp directory for the next step
         echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
