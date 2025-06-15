@@ -43,41 +43,31 @@ runs:
         fi
 
         # Create a random temporary directory
-        TMP_DIR=$(mktemp -d)
-        echo "Using temporary directory: $TMP_DIR"
+        #TMP_DIR=$(mktemp -d)
+        #echo "Using temporary directory: $TMP_DIR"
         echo "Using as template: $TEMPLATE"
 
         uvx marimushka --help
 
         uvx marimushka --template="$TEMPLATE" \
-                       --output ="$TMP_DIR" \
+                       --output ="/tmp/marimushka" \
                        --apps="${{ inputs.apps }}" \
                        --notebooks="${{ inputs.notebooks }}"
 
         # Save the temp directory for the next step
-        echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
+        # echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
         
-        tree $TMP_DIR
+        #tree $TMP_DIR
 
     - name: check the output
       shell: bash
       run: |
-        tree ${{ env.TMP_DIR }}
+        tree /tmp/marimushka
 
     - name: Upload HTML artifacts
       if: ${{ env.ACT != 'true' }}  # Skip if running with 'act'
       uses: actions/upload-artifact@v4
       with:
         name: marimo
-        path: ${{ env.TMP_DIR }}
+        path: /tmp/marimushka
         retention-days: 1
-
-    - name: 🧹 Clean up temporary folder
-      shell: bash
-      run: |
-        if [ -d "${{ env.TMP_DIR }}" ]; then
-          echo "Deleting temp dir: ${{ env.TMP_DIR }}"
-          rm -rf "${{ env.TMP_DIR }}"
-        else
-          echo "Temp dir already gone or not set."
-        fi
