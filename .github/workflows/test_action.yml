@@ -33,7 +33,6 @@ jobs:
           apps: 'src/tests/resources/apps'
           template: 'src/tests/resources/templates/default.html.j2'
 
-          #python-version: ${{ matrix.python-version }}
 
   template:
     runs-on: ubuntu-latest
