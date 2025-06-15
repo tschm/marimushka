@@ -57,8 +57,6 @@ runs:
           --apps "${{ inputs.apps }}" \
           --notebooks "${{ inputs.notebooks }}"
 
-        print(uvx marimushka.__version__)
-
     - name: 📂 Check the output structure
       shell: bash
       run: |
