@@ -56,6 +56,13 @@ runs:
 
         # Save the temp directory for the next step
         echo "TMP_DIR=$TMP_DIR" >> "$GITHUB_ENV"
+        
+        tree $TMP_DIR
+
+    - name: check the output
+      shell: bash
+      run: |
+        tree ${{ env.TMP_DIR }}
 
     - name: Upload HTML artifacts
       if: ${{ env.ACT != 'true' }}  # Skip if running with 'act'
