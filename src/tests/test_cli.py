@@ -1,3 +1,4 @@
+"""Tests for the command line interface."""
 from unittest.mock import patch
 
 from marimushka.export import cli, main
