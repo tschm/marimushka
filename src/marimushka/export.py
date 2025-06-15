@@ -111,15 +111,21 @@ def _generate_index(
     logger_instance.info("Generating index.html")
 
     # Create the full path for the index.html file
-    index_path: Path = output_dir / "index.html"
+    index_path: Path = Path(output_dir) / "index.html"
 
     # Ensure the output directory exists
-    output_dir.mkdir(parents=True, exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     try:
+        print(template_file)
+
         # Set up Jinja2 environment and load template
         template_dir = template_file.parent
         template_name = template_file.name
+
+        print(template_dir)
+        print(template_name)
+
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(template_dir), autoescape=jinja2.select_autoescape(["html", "xml"])
         )

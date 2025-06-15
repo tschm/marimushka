@@ -26,6 +26,6 @@ jobs:
         with:
           notebooks: 'src/tests/resources/notebooks'
           apps: 'src/tests/resources/apps'
-
+          template: 'src/tests/resources/templates/default.html.j2'
 
           #python-version: ${{ matrix.python-version }}
