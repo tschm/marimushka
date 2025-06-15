@@ -80,7 +80,7 @@ class Notebook:
             # Run marimo export command
             # logger_instance.debug(f"Running command: {cmd}")
             subprocess.run(cmd, capture_output=True, text=True, check=True)
-            #logger_instance.info(f"Successfully exported {self.path.stem}")
+            # logger_instance.info(f"Successfully exported {self.path.stem}")
             return True
         except subprocess.CalledProcessError as e:
             # Handle marimo export errors
