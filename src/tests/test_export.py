@@ -197,8 +197,8 @@ class TestMain:
 
         # Assert
         assert mock_folder2notebooks.call_count == 2
-        mock_folder2notebooks.assert_any_call(folder=None, is_app=False)
-        mock_folder2notebooks.assert_any_call(folder=None, is_app=True)
+        mock_folder2notebooks.assert_any_call(folder="notebooks", is_app=False)
+        mock_folder2notebooks.assert_any_call(folder="apps", is_app=True)
         mock_generate_index.assert_called_once()
         mock_logger.info.assert_called()
 
