@@ -46,7 +46,7 @@ runs:
         TMP_DIR=$(mktemp -d)
         echo "Using temporary directory: $TMP_DIR"
         echo "Using as template: $TEMPLATE"
-        
+
         uvx marimushka --help
 
         uvx marimushka --template="$TEMPLATE" \

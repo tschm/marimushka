@@ -251,7 +251,9 @@ def main(
     if apps is not None:
         logger_instance.info(f"Output directory for apps: {output_dir / 'apps'}")
         # Export apps from the apps/ directory
-        apps_data = _export(folder=Path(apps), output_dir=output_dir / "apps", as_app=True, logger_instance=logger_instance)
+        apps_data = _export(
+            folder=Path(apps), output_dir=output_dir / "apps", as_app=True, logger_instance=logger_instance
+        )
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
