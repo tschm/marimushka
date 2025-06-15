@@ -150,15 +150,19 @@ and deploy your notebooks:
     template: 'path/to/template.html.j2'  # Optional: custom template
     notebooks: 'notebooks'                # Optional: notebooks directory
     apps: 'apps'                          # Optional: apps directory
-    publish: 'true'                       # Optional: publish to GitHub Pages (default: false)
+    publish: 'true'                       # Optional: publish to GitHub Pages
+                                          # (default: false)
 ```
 
 When the `publish` parameter is set to `true`, the action will:
-1. Create a `.nojekyll` file to prevent GitHub Pages from processing with Jekyll
+
+1. Create a `.nojekyll` file to prevent GitHub Pages
+from processing with Jekyll
 2. Create a basic `robots.txt` file for search engine optimization
 3. Deploy the exported notebooks to the `gh-pages` branch for GitHub Pages hosting
 
-Note: To use the publish feature, your repository needs to have GitHub Pages enabled and configured to use the `gh-pages` branch.
+Note: To use the publish feature, your repository needs to have GitHub Pages
+enabled and configured to use the `gh-pages` branch.
 
 ## 🎨 Customizing Templates
 
