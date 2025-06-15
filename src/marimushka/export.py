@@ -117,14 +117,9 @@ def _generate_index(
     Path(output).mkdir(parents=True, exist_ok=True)
 
     try:
-        print(template_file)
-
         # Set up Jinja2 environment and load template
         template_dir = template_file.parent
         template_name = template_file.name
-
-        print(template_dir)
-        print(template_name)
 
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(template_dir), autoescape=jinja2.select_autoescape(["html", "xml"])
