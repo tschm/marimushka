@@ -149,8 +149,11 @@ def main(
     logger_instance.info(f"Notebooks: {notebooks}")
     logger_instance.info(f"Apps: {apps}")
 
+    print(apps)
+    print(notebooks)
+
     logger_instance.info(f"is apps none? {apps is None}")
-    logger_instance.info(f"is notebooks none? {apps is None}")
+    logger_instance.info(f"is notebooks none? {notebooks is None}")
 
     notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
     apps_data = _folder2notebooks(folder=apps, is_app=True)
