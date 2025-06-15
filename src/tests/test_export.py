@@ -7,19 +7,12 @@ This module contains tests for the functions in the export.py module:
 - cli
 """
 
-import subprocess
 from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import MagicMock, mock_open, patch
 
 import jinja2
-import pytest
 
-from marimushka.export import (
-    _folder2notebooks,
-    _generate_index,
-    main,
-    cli
-)
+from marimushka.export import _folder2notebooks, _generate_index, main
 
 
 class TestFolder2Notebooks:
