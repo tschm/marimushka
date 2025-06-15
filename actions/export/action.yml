@@ -29,10 +29,7 @@ runs:
       shell: bash
       run: |
         set -e  # Exit on error
-      
-        uv venv
-        uv pip install marimushka
-        
+
         # Path to default template in this action's directory
         DEFAULT_TEMPLATE="${GITHUB_ACTION_PATH}/templates/default.html.j2"
 
@@ -54,7 +51,7 @@ runs:
         echo "Apps: ${{ inputs.apps }}"
         echo "Notebooks: ${{ inputs.notebooks }}"
 
-        uv run marimushka \
+        uvx marimushka \
           --template "$TEMPLATE" \
           --output "$OUTPUT_DIR" \
           --apps "${{ inputs.apps }}" \
