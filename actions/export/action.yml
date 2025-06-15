@@ -59,11 +59,11 @@ runs:
           --apps "${{ inputs.apps }}" \
           --notebooks "${{ inputs.notebooks }}"
 
-    - name: 📂 Check the output structure
-      shell: bash
-      run: |
-        echo "Output directory contents:"
-        tree /tmp/marimushka || echo "(tree not installed)"
+    #- name: 📂 Check the output structure
+    #  shell: bash
+    #  run: |
+    #    echo "Output directory contents:"
+    #    tree /tmp/marimushka || echo "(tree not installed)"
 
     - name: 📤 Upload HTML artifacts
       uses: actions/upload-artifact@v4
