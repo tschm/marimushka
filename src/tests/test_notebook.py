@@ -4,13 +4,10 @@ This module contains tests for the Notebook class in the notebook.py module.
 """
 import subprocess
 from pathlib import Path
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import MagicMock, patch
 
-import jinja2
 import pytest
-from loguru import logger
 
-from marimushka.export import _folder2notebooks, _generate_index
 from marimushka.notebook import Notebook
 
 
@@ -56,39 +53,32 @@ class TestNotebook:
         # Setup
         notebook_path = Path("nonexistent_file.py")
 
-        # Mock Path.exists to return False
-        with patch.object(Path, 'exists', return_value=False):
-
-            # Execute and Assert
-            with pytest.raises(FileNotFoundError):
-                Notebook(notebook_path)
+        # Mock Path.exists to return False and execute/assert
+        with patch.object(Path, 'exists', return_value=False), pytest.raises(FileNotFoundError):
+            Notebook(notebook_path)
 
     def test_init_not_a_file(self):
         """Test initialization with a path that is not a file."""
         # Setup
         notebook_path = Path("directory")
 
-        # Mock Path.exists to return True and Path.is_file to return False
+        # Mock Path.exists to return True and Path.is_file to return False, then execute/assert
         with patch.object(Path, 'exists', return_value=True), \
-             patch.object(Path, 'is_file', return_value=False):
-
-            # Execute and Assert
-            with pytest.raises(ValueError):
-                Notebook(notebook_path)
+             patch.object(Path, 'is_file', return_value=False), \
+             pytest.raises(ValueError):
+            Notebook(notebook_path)
 
     def test_init_not_python_file(self):
         """Test initialization with a non-Python file."""
         # Setup
         notebook_path = Path("file.txt")
 
-        # Mock Path.exists and Path.is_file to return True, but set suffix to .txt
+        # Mock Path.exists and Path.is_file to return True, but set suffix to .txt, then execute/assert
         with patch.object(Path, 'exists', return_value=True), \
              patch.object(Path, 'is_file', return_value=True), \
-             patch.object(Path, 'suffix', '.txt'):
-
-            # Execute and Assert
-            with pytest.raises(ValueError):
-                Notebook(notebook_path)
+             patch.object(Path, 'suffix', '.txt'), \
+             pytest.raises(ValueError):
+            Notebook(notebook_path)
 
     @patch('subprocess.run')
     def test_to_wasm_success(self, mock_run, resource_dir, tmp_path, mock_logger):
@@ -194,7 +184,3 @@ class TestNotebook:
             # Assert
             assert result is False
             mock_logger.error.assert_called()
-
-
-
-

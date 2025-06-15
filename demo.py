@@ -1,4 +1,5 @@
 """Demo script for marimushka."""
+
 from pathlib import Path
 
 from marimushka.notebook import folder2notebooks, generate_index

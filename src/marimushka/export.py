@@ -28,6 +28,7 @@ from loguru import logger
 
 from marimushka.notebook import Notebook
 
+
 def _folder2notebooks(folder: Path | None, is_app: bool) -> list[Notebook]:
     """Find all marimo notebooks in a directory."""
     if folder is None:
@@ -36,8 +37,13 @@ def _folder2notebooks(folder: Path | None, is_app: bool) -> list[Notebook]:
     notebooks = list(folder.rglob("*.py"))
     return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
+
 def _generate_index(
-    output: Path, template_file: Path, notebooks: list[Notebook] | None = None, apps: list[Notebook] | None = None
+    output: Path,
+    template_file: Path,
+    notebooks: list[Notebook] | None = None,
+    apps: list[Notebook] | None = None,
+    logger_instance=logger,
 ) -> None:
     """Generate an index.html file that lists all the notebooks.
 
@@ -46,8 +52,8 @@ def _generate_index(
     with a formatted title and a link to open it.
 
     Args:
-        notebooks_data (List[dict]): List of dictionaries with data for notebooks
-        apps_data (List[dict]): List of dictionaries with data for apps
+        notebooks (List[Notebook]): List of notebooks with data for notebooks
+        apps (List[Notebook]): List of notebooks with data for apps
         output (Path): Directory where the index.html file will be saved
         template_file (Path, optional): Path to the template file. If None, uses the default template.
         logger_instance: Logger instance to use. Defaults to the standard logger.
@@ -56,9 +62,15 @@ def _generate_index(
         None
 
     """
+    # Initialize empty lists if None is provided
+    notebooks = notebooks or []
+    apps = apps or []
+
+    # Export notebooks to WebAssembly
     for nb in notebooks:
         nb.to_wasm(output_dir=output / "notebooks")
 
+    # Export apps to WebAssembly
     for nb in apps:
         nb.to_wasm(output_dir=output / "apps")
 
@@ -72,17 +84,26 @@ def _generate_index(
     template_dir = template_file.parent
     template_name = template_file.name
 
-    env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(template_dir), autoescape=jinja2.select_autoescape(["html", "xml"])
-    )
-    template = env.get_template(template_name)
+    try:
+        # Create Jinja2 environment and load template
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(template_dir), autoescape=jinja2.select_autoescape(["html", "xml"])
+        )
+        template = env.get_template(template_name)
 
-    # Render the template with notebook and app data
-    rendered_html = template.render(notebooks=notebooks, apps=apps)
+        # Render the template with notebook and app data
+        rendered_html = template.render(notebooks=notebooks, apps=apps)
 
-    # Write the rendered HTML to the index.html file
-    with Path.open(index_path, "w") as f:
-        f.write(rendered_html)
+        # Write the rendered HTML to the index.html file
+        try:
+            with Path.open(index_path, "w") as f:
+                f.write(rendered_html)
+            logger_instance.info(f"Successfully generated index file at {index_path}")
+        except OSError as e:
+            logger_instance.error(f"Error writing index file to {index_path}: {e}")
+    except jinja2.exceptions.TemplateError as e:
+        logger_instance.error(f"Error rendering template {template_file}: {e}")
+
 
 def main(
     output: str | Path | None = None,
