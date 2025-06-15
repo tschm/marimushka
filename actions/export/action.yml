@@ -66,7 +66,6 @@ runs:
         tree /tmp/marimushka || echo "(tree not installed)"
 
     - name: 📤 Upload HTML artifacts
-      if: ${{ env.ACT != 'true' }}  # Skip if running with 'act'
       uses: actions/upload-artifact@v4
       with:
         name: marimo
