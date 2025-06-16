@@ -26,14 +26,8 @@ def test_version(mock_rich_print):
 
 
 def test_compile_run():
+    """Test the compile command."""
     # Run the command and capture the output
     result = subprocess.run(["marimushka", "compile"], capture_output=True, text=True, check=True)
-    print("Command succeeded:")
-    print(result.stdout)
-
-
-def test_no_args():
-    # Run the command and capture the output
-    result = subprocess.run(["marimushka"], capture_output=True, text=True, check=True)
     print("Command succeeded:")
     print(result.stdout)

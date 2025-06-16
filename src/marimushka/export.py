@@ -35,7 +35,7 @@ app = typer.Typer(help=f"Marimushka - Export marimo notebooks in style. Version:
 
 @app.callback(invoke_without_command=True)
 def callback(ctx: typer.Context):
-    """Callback function that runs before any command."""
+    """Run before any command and display help if no command is provided."""
     # If no command is provided, show help
     if ctx.invoked_subcommand is None:
         print(ctx.get_help())
@@ -122,7 +122,7 @@ def _main_impl(
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
 ) -> None:
-    """Implementation of the main function.
+    """Implement the main function.
 
     This function contains the actual implementation of the main functionality.
     It is called by the main() function, which handles the Typer options.
