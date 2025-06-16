@@ -53,10 +53,13 @@ def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]
     return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
 
-def _generate_index(output: Path, template_file: Path,
-                    notebooks: list[Notebook] | None = None,
-                    apps: list[Notebook] | None = None,
-                    notebooks_wasm: list[Notebook] | None = None) -> None:
+def _generate_index(
+    output: Path,
+    template_file: Path,
+    notebooks: list[Notebook] | None = None,
+    apps: list[Notebook] | None = None,
+    notebooks_wasm: list[Notebook] | None = None,
+) -> None:
     """Generate an index.html file that lists all the notebooks.
 
     This function creates an HTML index page that displays links to all the exported
@@ -104,8 +107,7 @@ def _generate_index(output: Path, template_file: Path,
     try:
         # Create Jinja2 environment and load template
         env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(template_dir),
-            autoescape=jinja2.select_autoescape(["html", "xml"])
+            loader=jinja2.FileSystemLoader(template_dir), autoescape=jinja2.select_autoescape(["html", "xml"])
         )
         template = env.get_template(template_name)
 
@@ -128,11 +130,7 @@ def _generate_index(output: Path, template_file: Path,
 
 
 def _main_impl(
-    output: str | Path,
-    template: str | Path,
-    notebooks: str | Path,
-    apps: str | Path,
-    notebooks_wasm: str | Path
+    output: str | Path, template: str | Path, notebooks: str | Path, apps: str | Path, notebooks_wasm: str | Path
 ) -> None:
     """Implement the main function.
 
@@ -171,8 +169,13 @@ def _main_impl(
         logger.warning("No notebooks or apps found!")
         return
 
-    _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks_data, apps=apps_data, notebooks_wasm=notebooks_wasm_data)
-
+    _generate_index(
+        output=output_dir,
+        template_file=template_file,
+        notebooks=notebooks_data,
+        apps=apps_data,
+        notebooks_wasm=notebooks_wasm_data,
+    )
 
 
 def main(
@@ -180,7 +183,7 @@ def main(
     template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
-    notebooks_wasm: str | Path = "notebooks"
+    notebooks_wasm: str | Path = "notebooks",
 ) -> None:
     """Export marimo notebooks.
 
@@ -204,7 +207,9 @@ def _main_typer(
     ),
     notebooks: str = typer.Option("notebooks", "--notebooks", "-n", help="Directory containing marimo notebooks"),
     apps: str = typer.Option("apps", "--apps", "-a", help="Directory containing marimo apps"),
-    notebooks_wasm: str = typer.Option("notebooks", "--notebooks-wasm", "-nw", help="Directory containing marimo notebooks")
+    notebooks_wasm: str = typer.Option(
+        "notebooks", "--notebooks-wasm", "-nw", help="Directory containing marimo notebooks"
+    ),
 ) -> None:
     """Export marimo notebooks.
 
