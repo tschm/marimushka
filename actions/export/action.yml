@@ -58,7 +58,7 @@ runs:
         echo "Notebooks: ${{ inputs.notebooks }}"
         echo "Publish: ${{ inputs.publish }}"
 
-        uvx marimushka \
+        uvx marimushka compile \
           --template "$TEMPLATE" \
           --output "$OUTPUT_DIR" \
           --apps "${{ inputs.apps }}" \
