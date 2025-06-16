@@ -42,7 +42,7 @@ class Notebook:
         if not self.path.suffix == ".py":
             raise ValueError(f"File is not a Python file: {self.path}")
 
-    def to_wasm(self, output_dir: Path, logger_instance=logger) -> bool:
+    def to_wasm(self, output_dir: Path) -> bool:
         """Export the notebook to HTML/WebAssembly format.
 
         This method exports the marimo notebook to HTML/WebAssembly format.
@@ -52,7 +52,6 @@ class Notebook:
 
         Args:
             output_dir (Path): Directory where the exported HTML file will be saved
-            logger_instance: Logger instance to use. Defaults to the standard logger.
 
         Returns:
             bool: True if export succeeded, False otherwise
@@ -63,10 +62,10 @@ class Notebook:
 
         # Configure export mode based on whether it's an app or a notebook
         if self.is_app:
-            logger_instance.info(f"Export {self.path.stem} as app")
+            logger.info(f"Export {self.path.stem} as app")
             cmd.extend(["--mode", "run", "--no-show-code"])  # Apps run in "run" mode with hidden code
         else:
-            logger_instance.info(f"Export {self.path.stem} as notebook")
+            logger.info(f"Export {self.path.stem} as notebook")
             cmd.extend(["--mode", "edit"])  # Notebooks run in "edit" mode
 
         try:
@@ -84,12 +83,12 @@ class Notebook:
             return True
         except subprocess.CalledProcessError as e:
             # Handle marimo export errors
-            logger_instance.error(f"Error exporting {self.path}:")
-            logger_instance.error(f"Command output: {e.stderr}")
+            logger.error(f"Error exporting {self.path}:")
+            logger.error(f"Command output: {e.stderr}")
             return False
         except Exception as e:
             # Handle unexpected errors
-            logger_instance.error(f"Unexpected error exporting {self.path}: {e}")
+            logger.error(f"Unexpected error exporting {self.path}: {e}")
             return False
 
     @property

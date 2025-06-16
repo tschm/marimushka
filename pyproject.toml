@@ -6,7 +6,7 @@ authors = [{name='Thomas Schmelzer', email= 'thomas.schmelzer@gmail.com'}]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "fire>=0.7.0",
+    "typer>=0.16.0",
     "jinja2>=3.1.6",
     "loguru>=0.7.3",
 ]

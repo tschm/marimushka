@@ -1,6 +1,4 @@
 """Test complete marimushka build process."""
-from loguru import logger
-
 from marimushka.export import main
 
 
@@ -9,8 +7,8 @@ def test_complete(resource_dir, tmp_path):
     main(notebooks=resource_dir / "notebooks",
          apps=resource_dir / "apps",
          template=resource_dir / "templates" / "default.html.j2",
-         output=tmp_path / "output",
-         logger_instance=logger)
+         output=tmp_path / "output"
+    )
 
     assert (tmp_path / "output" / "index.html").exists()
     assert (tmp_path / "output" / "notebooks" ).exists()
@@ -30,8 +28,8 @@ def test_no_apps(resource_dir, tmp_path):
     """Test complete marimushka build process."""
     main(notebooks=resource_dir / "notebooks",
          template=resource_dir / "templates" / "default.html.j2",
-         output=tmp_path / "output",
-         logger_instance=logger)
+         output=tmp_path / "output"
+    )
 
     assert (tmp_path / "output" / "index.html").exists()
     assert (tmp_path / "output" / "notebooks" ).exists()

@@ -81,7 +81,7 @@ class TestNotebook:
             Notebook(notebook_path)
 
     @patch('subprocess.run')
-    def test_to_wasm_success(self, mock_run, resource_dir, tmp_path, mock_logger):
+    def test_to_wasm_success(self, mock_run, resource_dir, tmp_path):
         """Test successful export of a notebook to WebAssembly."""
         # Setup
         notebook_path = resource_dir / "notebooks" / "fibonacci.py"
@@ -97,12 +97,11 @@ class TestNotebook:
             notebook = Notebook(notebook_path)
 
             # Execute
-            result = notebook.to_wasm(output_dir, logger_instance=mock_logger)
+            result = notebook.to_wasm(output_dir)
 
             # Assert
             assert result is True
             mock_run.assert_called_once()
-            mock_logger.info.assert_called()
 
             # Check that the command includes the notebook-specific flags
             cmd_args = mock_run.call_args[0][0]
@@ -111,7 +110,7 @@ class TestNotebook:
             assert "--no-show-code" not in cmd_args
 
     @patch('subprocess.run')
-    def test_to_wasm_as_app(self, mock_run, resource_dir, tmp_path, mock_logger):
+    def test_to_wasm_as_app(self, mock_run, resource_dir, tmp_path):
         """Test export of a notebook as an app."""
         # Setup
         notebook_path = resource_dir / "apps" / "charts.py"
@@ -127,7 +126,7 @@ class TestNotebook:
             notebook = Notebook(notebook_path, is_app=True)
 
             # Execute
-            result = notebook.to_wasm(output_dir, logger_instance=mock_logger)
+            result = notebook.to_wasm(output_dir)
 
             # Assert
             assert result is True
@@ -140,7 +139,7 @@ class TestNotebook:
             assert "--no-show-code" in cmd_args
 
     @patch('subprocess.run')
-    def test_to_wasm_subprocess_error(self, mock_run, resource_dir, tmp_path, mock_logger):
+    def test_to_wasm_subprocess_error(self, mock_run, resource_dir, tmp_path):
         """Test handling of subprocess error during export."""
         # Setup
         notebook_path = resource_dir / "notebooks" / "fibonacci.py"
@@ -156,14 +155,13 @@ class TestNotebook:
             notebook = Notebook(notebook_path)
 
             # Execute
-            result = notebook.to_wasm(output_dir, logger_instance=mock_logger)
+            result = notebook.to_wasm(output_dir)
 
             # Assert
             assert result is False
-            mock_logger.error.assert_called()
 
     @patch('subprocess.run')
-    def test_to_wasm_general_exception(self, mock_run, resource_dir, tmp_path, mock_logger):
+    def test_to_wasm_general_exception(self, mock_run, resource_dir, tmp_path):
         """Test handling of general exception during export."""
         # Setup
         notebook_path = resource_dir / "notebooks" / "fibonacci.py"
@@ -179,8 +177,7 @@ class TestNotebook:
             notebook = Notebook(notebook_path)
 
             # Execute
-            result = notebook.to_wasm(output_dir, logger_instance=mock_logger)
+            result = notebook.to_wasm(output_dir)
 
             # Assert
             assert result is False
-            mock_logger.error.assert_called()

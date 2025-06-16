@@ -14,21 +14,25 @@ The exported files will be placed in the specified output directory (default: _s
 # requires-python = ">=3.12"
 # dependencies = [
 #     "jinja2==3.1.3",
-#     "fire==0.7.0",
+#     "typer==0.16.0",
 #     "loguru==0.7.0"
 # ]
 # ///
 
 from logging import Logger
 from pathlib import Path
+from typing import Optional
 
-import fire
 import jinja2
+import typer
 from loguru import logger
+from rich import print as rich_print
 
 from marimushka.notebook import Notebook
 
 from . import __version__
+
+app = typer.Typer(help=f"Marimushka - Export marimo notebooks in style. Version: {__version__}")
 
 
 def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]:
@@ -45,8 +49,7 @@ def _generate_index(
     output: Path,
     template_file: Path,
     notebooks: list[Notebook] | None = None,
-    apps: list[Notebook] | None = None,
-    logger_instance=logger,
+    apps: list[Notebook] | None = None
 ) -> None:
     """Generate an index.html file that lists all the notebooks.
 
@@ -101,58 +104,40 @@ def _generate_index(
         try:
             with Path.open(index_path, "w") as f:
                 f.write(rendered_html)
-            logger_instance.info(f"Successfully generated index file at {index_path}")
+            logger.info(f"Successfully generated index file at {index_path}")
         except OSError as e:
-            logger_instance.error(f"Error writing index file to {index_path}: {e}")
+            logger.error(f"Error writing index file to {index_path}: {e}")
     except jinja2.exceptions.TemplateError as e:
-        logger_instance.error(f"Error rendering template {template_file}: {e}")
+        logger.error(f"Error rendering template {template_file}: {e}")
 
 
-def main(
-    output: str | Path | None = "_site",
-    template: str | Path | None = Path(__file__).parent / "templates" / "default.html.j2",
-    notebooks: str | Path | None = "notebooks",
-    apps: str | Path | None = "apps",
-    logger_instance: Logger | None = None,
+def _main_impl(
+    output: str | Path = "_site",
+    template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
+    notebooks: str | Path = "notebooks",
+    apps: str | Path = "apps"
 ) -> None:
-    """Export marimo notebooks.
+    """Implementation of the main function.
 
-    This function:
-
-    1. Parses command line arguments
-    2. Exports all marimo notebooks in 'notebooks' and 'apps' directories
-    3. Generates an index.html file that lists all the notebooks
-
-    Command line arguments:
-        --output: Directory where the exported files will be saved (default: _site)
-        --template: Path to the template file (default: templates/index.html.j2)
-        --notebooks: Directory containing marimo notebooks (default: notebooks)
-        --apps: Directory containing marimo apps (default: apps)
-        --logger_instance: Logger instance to use. Defaults to the standard loguru logger.
-
-    Returns:
-        None
-
+    This function contains the actual implementation of the main functionality.
+    It is called by the main() function, which handles the Typer options.
     """
-    if logger_instance is None:
-        logger_instance = logger
-
-    logger_instance.info("Starting marimushka build process")
-    logger_instance.info(f"Version of Marimushka: {__version__}")
+    logger.info("Starting marimushka build process")
+    logger.info(f"Version of Marimushka: {__version__}")
     output = output or "_site"
 
-    # Convert output_dir explicitly to Path (not done by fire)
+    # Convert output_dir explicitly to Path
     output_dir: Path = Path(output)
-    logger_instance.info(f"Output directory: {output_dir}")
+    logger.info(f"Output directory: {output_dir}")
 
     # Make sure the output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Convert template to Path if provided
     template_file: Path = Path(template)
-    logger_instance.info(f"Using template file: {template_file}")
-    logger_instance.info(f"Notebooks: {notebooks}")
-    logger_instance.info(f"Apps: {apps}")
+    logger.info(f"Using template file: {template_file}")
+    logger.info(f"Notebooks: {notebooks}")
+    logger.info(f"Apps: {apps}")
 
     notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
     apps_data = _folder2notebooks(folder=apps, is_app=True)
@@ -162,31 +147,83 @@ def main(
 
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data:
-        logger_instance.warning("No notebooks or apps found!")
+        logger.warning("No notebooks or apps found!")
         return
 
     _generate_index(
         output=output_dir,
         template_file=template_file,
         notebooks=notebooks_data,
-        apps=apps_data,
+        apps=apps_data
     )
 
 
-class MarimushkaCLI:
-    """Marimushka CLI."""
+def main(
+    output: str | Path = "_site",
+    template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
+    notebooks: str | Path = "notebooks",
+    apps: str | Path = "apps"
+) -> None:
+    """Export marimo notebooks.
 
-    compile = staticmethod(main)
+    This function:
 
-    __doc__ = f"""Compile your Marimo notebooks. Version: {__version__}"""
+    1. Exports all marimo notebooks in 'notebooks' and 'apps' directories
+    2. Generates an index.html file that lists all the notebooks
+    """
+    # Call the implementation function with the provided parameters
+    _main_impl(
+        output=output,
+        template=template,
+        notebooks=notebooks,
+        apps=apps
+    )
 
-    __version__ = __version__
 
-    # def __version__(self):
-    #    return __version__
+@app.command(name="compile")
+def _main_typer(
+    output: str = typer.Option("_site", "--output", "-o", help="Directory where the exported files will be saved"),
+    template: str = typer.Option(
+        str(Path(__file__).parent / "templates" / "default.html.j2"),
+        "--template", "-t",
+        help="Path to the template file"
+    ),
+    notebooks: str = typer.Option("notebooks", "--notebooks", "-n", help="Directory containing marimo notebooks"),
+    apps: str = typer.Option("apps", "--apps", "-a", help="Directory containing marimo apps")
+) -> None:
+    """Export marimo notebooks.
+
+    This command:
+
+    1. Exports all marimo notebooks in 'notebooks' and 'apps' directories
+    2. Generates an index.html file that lists all the notebooks
+    """
+    # When called through Typer, the parameters might be typer.Option objects
+    # Extract the default values from the Option objects if necessary
+    output_val = getattr(output, "default", output)
+    template_val = getattr(template, "default", template)
+    notebooks_val = getattr(notebooks, "default", notebooks)
+    apps_val = getattr(apps, "default", apps)
+
+    # Call the main function with the resolved parameter values
+    main(
+        output=output_val,
+        template=template_val,
+        notebooks=notebooks_val,
+        apps=apps_val,
+    )
+
+
+@app.command(name="version")
+def version():
+    """Show the version of Marimushka."""
+    rich_print(f"[bold green]Marimushka[/bold green] version: [bold blue]{__version__}[/bold blue]")
 
 
 def cli():
     """Run the CLI."""
-    # Otherwise, use Fire to create a CLI
-    fire.Fire(MarimushkaCLI, name="marimushka")  # qq q, name=f"Marimushka {__version__}")
+    try:
+        app()
+    except Exception as e:
+        logger.error(f"Error running CLI: {e}")
+        raise

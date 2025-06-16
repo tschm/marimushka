@@ -11,6 +11,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
 import jinja2
+from loguru import logger
 
 from marimushka.export import _folder2notebooks, _generate_index, main
 
@@ -98,7 +99,7 @@ class TestGenerateIndex:
 
     @patch.object(Path, 'open', new_callable=mock_open)
     @patch('jinja2.Environment')
-    def test_generate_index_success(self, mock_env, mock_file_open, tmp_path, mock_logger):
+    def test_generate_index_success(self, mock_env, mock_file_open, tmp_path):
         """Test successful generation of index.html."""
         # Setup
         output_dir = tmp_path / "output"
@@ -185,7 +186,7 @@ class TestMain:
 
     @patch('marimushka.export._folder2notebooks')
     @patch('marimushka.export._generate_index')
-    def test_main_success(self, mock_generate_index, mock_folder2notebooks, mock_logger):
+    def test_main_success(self, mock_generate_index, mock_folder2notebooks):
         """Test successful execution of the main function."""
         # Setup
         mock_notebooks = [MagicMock(), MagicMock()]
@@ -193,33 +194,31 @@ class TestMain:
         mock_folder2notebooks.side_effect = [mock_notebooks, mock_apps]
 
         # Execute
-        main(logger_instance=mock_logger)
+        main()
 
         # Assert
         assert mock_folder2notebooks.call_count == 2
         mock_folder2notebooks.assert_any_call(folder="notebooks", is_app=False)
         mock_folder2notebooks.assert_any_call(folder="apps", is_app=True)
         mock_generate_index.assert_called_once()
-        mock_logger.info.assert_called()
 
     @patch('marimushka.export._folder2notebooks')
     @patch('marimushka.export._generate_index')
-    def test_main_no_notebooks_or_apps(self, mock_generate_index, mock_folder2notebooks, mock_logger):
+    def test_main_no_notebooks_or_apps(self, mock_generate_index, mock_folder2notebooks):
         """Test handling of no notebooks or apps found."""
         # Setup
         mock_folder2notebooks.return_value = []
 
         # Execute
-        main(logger_instance=mock_logger)
+        main()
 
         # Assert
         assert mock_folder2notebooks.call_count == 2
         mock_generate_index.assert_not_called()
-        mock_logger.warning.assert_called_with("No notebooks or apps found!")
 
     @patch('marimushka.export._folder2notebooks')
     @patch('marimushka.export._generate_index')
-    def test_main_custom_paths(self, mock_generate_index, mock_folder2notebooks, mock_logger, tmp_path):
+    def test_main_custom_paths(self, mock_generate_index, mock_folder2notebooks, tmp_path):
         """Test main function with custom paths."""
         # Setup
         mock_notebooks = [MagicMock(), MagicMock()]
@@ -236,8 +235,7 @@ class TestMain:
             output=custom_output,
             template=custom_template,
             notebooks=custom_notebooks,
-            apps=custom_apps,
-            logger_instance=mock_logger
+            apps=custom_apps
         )
 
         # Assert
@@ -249,7 +247,6 @@ class TestMain:
             notebooks=mock_notebooks,
             apps=mock_apps
         )
-        mock_logger.info.assert_called()
 
     @patch('marimushka.export._folder2notebooks')
     @patch('marimushka.export._generate_index')
