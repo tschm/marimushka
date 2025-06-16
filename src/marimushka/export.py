@@ -116,12 +116,7 @@ def _generate_index(
         logger.error(f"Error rendering template {template_file}: {e}")
 
 
-def _main_impl(
-    output: str | Path,
-    template: str | Path,
-    notebooks: str | Path,
-    apps: str | Path
-) -> None:
+def _main_impl(output: str | Path, template: str | Path, notebooks: str | Path, apps: str | Path) -> None:
     """Implement the main function.
 
     This function contains the actual implementation of the main functionality.
