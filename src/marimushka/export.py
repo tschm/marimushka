@@ -34,6 +34,15 @@ from . import __version__
 
 app = typer.Typer(help=f"Marimushka - Export marimo notebooks in style. Version: {__version__}")
 
+@app.callback(invoke_without_command=True)
+def callback(ctx: typer.Context):
+    """Callback function that runs before any command."""
+    # If no command is provided, show help
+    if ctx.invoked_subcommand is None:
+        print(ctx.get_help())
+        # Exit with code 0 to indicate success
+        raise typer.Exit()
+
 
 def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]:
     """Find all marimo notebooks in a directory."""
@@ -222,8 +231,4 @@ def version():
 
 def cli():
     """Run the CLI."""
-    try:
-        app()
-    except Exception as e:
-        logger.error(f"Error running CLI: {e}")
-        raise
+    app()
