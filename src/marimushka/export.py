@@ -117,10 +117,10 @@ def _generate_index(
 
 
 def _main_impl(
-    output: str | Path = "_site",
-    template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
-    notebooks: str | Path = "notebooks",
-    apps: str | Path = "apps",
+    output: str | Path,
+    template: str | Path,
+    notebooks: str | Path,
+    apps: str | Path
 ) -> None:
     """Implement the main function.
 
