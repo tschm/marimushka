@@ -118,6 +118,7 @@ def main(
     """Export marimo notebooks.
 
     This function:
+
     1. Parses command line arguments
     2. Exports all marimo notebooks in 'notebooks' and 'apps' directories
     3. Generates an index.html file that lists all the notebooks
@@ -172,57 +173,20 @@ def main(
     )
 
 
+class MarimushkaCLI:
+    """Marimushka CLI."""
+
+    compile = staticmethod(main)
+
+    __doc__ = f"""Compile your Marimo notebooks. Version: {__version__}"""
+
+    __version__ = __version__
+
+    # def __version__(self):
+    #    return __version__
+
+
 def cli():
-    """Command line interface for marimushka build process."""
-    import sys
-
-    # ANSI color codes
-    BLUE = "\033[94m"
-    GREEN = "\033[92m"
-    YELLOW = "\033[93m"
-    CYAN = "\033[96m"
-    BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
-    RESET = "\033[0m"
-
-    # If no arguments are provided, display the docstring and exit
-    if len(sys.argv) == 1:
-        print(f"\n{BOLD}{BLUE}Marimushka{RESET}\n")
-        print(f"{YELLOW}Version: {__version__}{RESET}\n")
-
-        # Print the docstring with proper formatting
-        docstring = main.__doc__.strip()
-
-        for line in docstring.split('\n'):
-            line = line.strip()
-
-            # Highlight section titles
-            if line.endswith(':') and not line.startswith('--'):
-                print(f"\n{BOLD}{GREEN}{line}{RESET}")
-            # Highlight command line arguments
-            elif line.startswith('--'):
-                arg_parts = line.split(':', 1)
-                if len(arg_parts) > 1:
-                    print(f"    {BLUE}{arg_parts[0]}{RESET}: {arg_parts[1]}")
-                else:
-                    print(f"    {BLUE}{line}{RESET}")
-
-            # Highlight numbered list items
-            elif line.startswith(('1.', '2.', '3.', '4.', '5.')):
-                num, text = line.split('.', 1)
-                print(f"{YELLOW}{num}.{RESET}{text}")
-            # Highlight "Returns" section
-            elif line == "Returns:":
-                print(f"\n{BOLD}{CYAN}{line}{RESET}")
-            # Highlight "None" in the Returns section
-            elif line == "None" and docstring.split('\n')[-3].strip() == "Returns:":
-                print(f"    {CYAN}{line}{RESET}")
-            # Regular text
-            else:
-                print(line)
-
-        print(f"\n{BOLD}For more information, visit:{RESET} {UNDERLINE}https://github.com/tschm/marimushka{RESET}\n")
-        return
-
+    """Run the CLI."""
     # Otherwise, use Fire to create a CLI
-    fire.Fire(main)
+    fire.Fire(MarimushkaCLI, name="marimushka")  # qq q, name=f"Marimushka {__version__}")
