@@ -11,7 +11,6 @@ from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
 import jinja2
-from loguru import logger
 
 from marimushka.export import _folder2notebooks, _generate_index, main
 

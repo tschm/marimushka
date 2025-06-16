@@ -1,5 +1,6 @@
 import subprocess
 
+
 def test_help():
     # Run the command and capture the output
     result = subprocess.run(["marimushka", "--help"], capture_output=True, text=True, check=True)

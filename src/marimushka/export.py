@@ -19,9 +19,7 @@ The exported files will be placed in the specified output directory (default: _s
 # ]
 # ///
 
-from logging import Logger
 from pathlib import Path
-from typing import Optional
 
 import jinja2
 import typer
@@ -33,6 +31,7 @@ from marimushka.notebook import Notebook
 from . import __version__
 
 app = typer.Typer(help=f"Marimushka - Export marimo notebooks in style. Version: {__version__}")
+
 
 @app.callback(invoke_without_command=True)
 def callback(ctx: typer.Context):
@@ -55,10 +54,7 @@ def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]
 
 
 def _generate_index(
-    output: Path,
-    template_file: Path,
-    notebooks: list[Notebook] | None = None,
-    apps: list[Notebook] | None = None
+    output: Path, template_file: Path, notebooks: list[Notebook] | None = None, apps: list[Notebook] | None = None
 ) -> None:
     """Generate an index.html file that lists all the notebooks.
 
@@ -124,7 +120,7 @@ def _main_impl(
     output: str | Path = "_site",
     template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
     notebooks: str | Path = "notebooks",
-    apps: str | Path = "apps"
+    apps: str | Path = "apps",
 ) -> None:
     """Implementation of the main function.
 
@@ -159,19 +155,14 @@ def _main_impl(
         logger.warning("No notebooks or apps found!")
         return
 
-    _generate_index(
-        output=output_dir,
-        template_file=template_file,
-        notebooks=notebooks_data,
-        apps=apps_data
-    )
+    _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks_data, apps=apps_data)
 
 
 def main(
     output: str | Path = "_site",
     template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
     notebooks: str | Path = "notebooks",
-    apps: str | Path = "apps"
+    apps: str | Path = "apps",
 ) -> None:
     """Export marimo notebooks.
 
@@ -181,12 +172,7 @@ def main(
     2. Generates an index.html file that lists all the notebooks
     """
     # Call the implementation function with the provided parameters
-    _main_impl(
-        output=output,
-        template=template,
-        notebooks=notebooks,
-        apps=apps
-    )
+    _main_impl(output=output, template=template, notebooks=notebooks, apps=apps)
 
 
 @app.command(name="compile")
@@ -194,11 +180,12 @@ def _main_typer(
     output: str = typer.Option("_site", "--output", "-o", help="Directory where the exported files will be saved"),
     template: str = typer.Option(
         str(Path(__file__).parent / "templates" / "default.html.j2"),
-        "--template", "-t",
-        help="Path to the template file"
+        "--template",
+        "-t",
+        help="Path to the template file",
     ),
     notebooks: str = typer.Option("notebooks", "--notebooks", "-n", help="Directory containing marimo notebooks"),
-    apps: str = typer.Option("apps", "--apps", "-a", help="Directory containing marimo apps")
+    apps: str = typer.Option("apps", "--apps", "-a", help="Directory containing marimo apps"),
 ) -> None:
     """Export marimo notebooks.
 
