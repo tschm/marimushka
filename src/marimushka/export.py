@@ -70,9 +70,9 @@ def _generate_index(
         notebooks_wasm:
         notebooks (List[Notebook]): List of notebooks with data for notebooks
         apps (List[Notebook]): List of notebooks with data for apps
+        notebooks_wasm (List[Notebook]): List of notebooks with data for notebooks_wasm
         output (Path): Directory where the index.html file will be saved
         template_file (Path, optional): Path to the template file. If None, uses the default template.
-        logger_instance: Logger instance to use. Defaults to the standard logger.
 
     Returns:
         None
