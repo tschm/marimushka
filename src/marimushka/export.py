@@ -53,9 +53,10 @@ def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]
     return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
 
-def _generate_index(
-    output: Path, template_file: Path, notebooks: list[Notebook] | None = None, apps: list[Notebook] | None = None
-) -> None:
+def _generate_index(output: Path, template_file: Path,
+                    notebooks: list[Notebook] | None = None,
+                    apps: list[Notebook] | None = None,
+                    notebooks_wasm: list[Notebook] | None = None) -> None:
     """Generate an index.html file that lists all the notebooks.
 
     This function creates an HTML index page that displays links to all the exported
@@ -63,6 +64,7 @@ def _generate_index(
     with a formatted title and a link to open it.
 
     Args:
+        notebooks_wasm:
         notebooks (List[Notebook]): List of notebooks with data for notebooks
         apps (List[Notebook]): List of notebooks with data for apps
         output (Path): Directory where the index.html file will be saved
@@ -76,6 +78,7 @@ def _generate_index(
     # Initialize empty lists if None is provided
     notebooks = notebooks or []
     apps = apps or []
+    notebooks_wasm = notebooks_wasm or []
 
     # Export notebooks to WebAssembly
     for nb in notebooks:
@@ -84,6 +87,9 @@ def _generate_index(
     # Export apps to WebAssembly
     for nb in apps:
         nb.to_wasm(output_dir=output / "apps")
+
+    for nb in notebooks_wasm:
+        nb.to_wasm(output_dir=output / "notebooks_wasm")
 
     # Create the full path for the index.html file
     index_path: Path = Path(output) / "index.html"
@@ -98,12 +104,17 @@ def _generate_index(
     try:
         # Create Jinja2 environment and load template
         env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(template_dir), autoescape=jinja2.select_autoescape(["html", "xml"])
+            loader=jinja2.FileSystemLoader(template_dir),
+            autoescape=jinja2.select_autoescape(["html", "xml"])
         )
         template = env.get_template(template_name)
 
         # Render the template with notebook and app data
-        rendered_html = template.render(notebooks=notebooks, apps=apps)
+        rendered_html = template.render(
+            notebooks=notebooks,
+            apps=apps,
+            notebooks_wasm=notebooks_wasm,
+        )
 
         # Write the rendered HTML to the index.html file
         try:
@@ -120,7 +131,8 @@ def _main_impl(
     output: str | Path,
     template: str | Path,
     notebooks: str | Path,
-    apps: str | Path
+    apps: str | Path,
+    notebooks_wasm: str | Path
 ) -> None:
     """Implement the main function.
 
@@ -144,18 +156,23 @@ def _main_impl(
     logger.info(f"Notebooks: {notebooks}")
     logger.info(f"Apps: {apps}")
 
+    # todo: add a few more flags here to export the notebooks in different formats
+    # todo: fix the template
     notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
     apps_data = _folder2notebooks(folder=apps, is_app=True)
+    notebooks_wasm_data = _folder2notebooks(folder=notebooks_wasm, is_app=False)
 
     logger.info(f"# notebooks_data: {len(notebooks_data)}")
     logger.info(f"# apps_data: {len(apps_data)}")
+    logger.info(f"# notebooks_wasm_data: {len(notebooks_wasm_data)}")
 
     # Exit if no notebooks or apps were found
-    if not notebooks_data and not apps_data:
+    if not notebooks_data and not apps_data and not notebooks_wasm_data:
         logger.warning("No notebooks or apps found!")
         return
 
-    _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks_data, apps=apps_data)
+    _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks_data, apps=apps_data, notebooks_wasm=notebooks_wasm_data)
+
 
 
 def main(
@@ -163,6 +180,7 @@ def main(
     template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
+    notebooks_wasm: str | Path = "notebooks"
 ) -> None:
     """Export marimo notebooks.
 
@@ -172,7 +190,7 @@ def main(
     2. Generates an index.html file that lists all the notebooks
     """
     # Call the implementation function with the provided parameters
-    _main_impl(output=output, template=template, notebooks=notebooks, apps=apps)
+    _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
 
 
 @app.command(name="compile")
@@ -186,6 +204,7 @@ def _main_typer(
     ),
     notebooks: str = typer.Option("notebooks", "--notebooks", "-n", help="Directory containing marimo notebooks"),
     apps: str = typer.Option("apps", "--apps", "-a", help="Directory containing marimo apps"),
+    notebooks_wasm: str = typer.Option("notebooks", "--notebooks-wasm", "-nw", help="Directory containing marimo notebooks")
 ) -> None:
     """Export marimo notebooks.
 
@@ -200,6 +219,7 @@ def _main_typer(
     template_val = getattr(template, "default", template)
     notebooks_val = getattr(notebooks, "default", notebooks)
     apps_val = getattr(apps, "default", apps)
+    notebooks_wasm_val = getattr(notebooks_wasm, "default", notebooks_wasm)
 
     # Call the main function with the resolved parameter values
     main(
@@ -207,6 +227,7 @@ def _main_typer(
         template=template_val,
         notebooks=notebooks_val,
         apps=apps_val,
+        notebooks_wasm=notebooks_wasm_val,
     )
 
 
