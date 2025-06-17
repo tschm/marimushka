@@ -27,7 +27,7 @@ class Kind(Enum):
                 return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "run"]
 
     @property
-    def html_path(self) -> Path
+    def html_path(self) -> Path:
         match self:
             case Kind.NB:
                 return Path("notebooks")
@@ -58,10 +58,6 @@ class Notebook:
     Attributes:
         path (Path): Path to the marimo notebook (.py file)
         kind (Kind): How the notebook ts treated
-        
-        #Whether the notebook should be treated as an app (run mode)
-        #              or a regular notebook (edit mode). Defaults to False.
-
     """
 
     path: Path
