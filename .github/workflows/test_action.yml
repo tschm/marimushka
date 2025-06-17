@@ -48,7 +48,7 @@ jobs:
           tree artifacts
           assert Path("artifacts/marimushka/index.html").exists()
           assert Path("artifacts/marimushka/notebooks/fibonacci.html").exists()
-          
+
           #if [ -f "artifacts/marimushka/notebooks/fibonacci.html" ]; then
           #  echo "✅ Marimo artifact downloaded successfully"
           #else
