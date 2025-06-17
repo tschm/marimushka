@@ -45,7 +45,7 @@ jobs:
       - name: Verify downloaded artifact
         run: |
           tree artifacts
-          if [ -f "/tmp/downloaded-marimo/index.html" ]; then
+          if [ -f "artifacts/marimushka/notebooks/fibonacci.html" ]; then
             echo "✅ Marimo artifact downloaded successfully"
           else
             echo "❌ Failed to download marimo artifact"
