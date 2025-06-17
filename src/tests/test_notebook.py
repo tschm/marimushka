@@ -13,7 +13,18 @@ from marimushka.notebook import Kind, Notebook
 
 class TestKind:
     """Tests for the Kind enum."""
+
     def test_from_string(self):
+        """Test cases for validating the Kind.from_str method.
+
+        Tests the conversion of string representations to the corresponding Kind
+        enum values. Ensures that valid string mappings return the expected enum
+        value. Also ensures that invalid strings raise the appropriate exception.
+
+        Raises:
+            ValueError: If the input string does not correspond to any Kind enum.
+
+        """
         kind = Kind.from_str("notebook")
         assert kind == Kind.NB
 

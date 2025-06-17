@@ -178,10 +178,10 @@ def main(
     apps: str | Path = "apps",
     notebooks_wasm: str | Path = "notebooks",
 ) -> str:
-    """
-    Call the implementation function with the provided parameters and return its result.
+    """Call the implementation function with the provided parameters and return its result.
 
-    Parameters:
+    Parameters
+    ----------
     output: str | Path
         The output directory where generated files will be stored.
         Defaults to "_site".
@@ -197,10 +197,12 @@ def main(
         Directory containing WebAssembly-related files for notebooks.
         Defaults to "notebooks".
 
-    Returns:
+    Returns
+    -------
     str
         The result returned by the implementation function, representing the
         completion of the generation process or final outcome.
+
     """
     # Call the implementation function with the provided parameters and return its result
     return _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)

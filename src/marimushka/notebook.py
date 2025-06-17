@@ -20,13 +20,41 @@ class Kind(Enum):
 
     @classmethod
     def from_str(cls, value: str) -> "Kind":
+        """Represent a factory method to parse a string into a Kind enumeration instance.
+
+        This method attempts to match the input string to an existing kind defined
+        in the Kind enumeration. If the input string does not match any valid kind,
+        an error is raised detailing the invalid value and listing acceptable kinds.
+
+        Args:
+            value (str): A string representing the kind to parse into a Kind instance.
+
+        Returns:
+            Kind: An instance of the Kind enumeration corresponding to the input string.
+
+        Raises:
+            ValueError: If the input string does not match any valid Kind value.
+
+        """
         try:
             return Kind(value)
-        except ValueError:
-            raise ValueError(f"Invalid Kind: {value!r}. Must be one of {[k.value for k in Kind]}")
+        except ValueError as e:
+            raise ValueError(f"Invalid Kind: {value!r}. Must be one of {[k.value for k in Kind]}") from e
 
     @property
     def command(self) -> list[str]:
+        """Get the command list associated with a specific Kind instance.
+
+        The command property returns a list of command strings that correspond
+        to different kinds of operations based on the Kind instance.
+
+        Attributes:
+            command: A list of strings representing the command.
+
+        Returns:
+            list[str]: A list of command strings for the corresponding Kind instance.
+
+        """
         commands = {
             Kind.NB: ["uvx", "marimo", "export", "html", "--sandbox"],
             Kind.NB_WASM: ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "edit"],
@@ -34,18 +62,24 @@ class Kind(Enum):
         }
         return commands[self]
 
-
     @property
     def html_path(self) -> Path:
-        """Path for HTML."""
+        """Provide a property to determine the HTML path for different kinds of objects.
+
+        This property computes the corresponding directory path based on the kind
+        of the object, such as notebooks, notebooks_wasm, or apps.
+
+        @return: A Path object representing the relevant directory path for the
+            current kind.
+
+        @rtype: Path
+        """
         paths = {
             Kind.NB: Path("notebooks"),
             Kind.NB_WASM: Path("notebooks_wasm"),
             Kind.APP: Path("apps"),
         }
         return paths[self]
-
-
 
 
 @dataclasses.dataclass(frozen=True)
