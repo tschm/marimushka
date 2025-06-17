@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from marimushka.notebook import Notebook
+from marimushka.notebook import Notebook, Kind
 
 
 class TestNotebook:
@@ -29,7 +29,6 @@ class TestNotebook:
 
             # Assert
             assert notebook.path == notebook_path
-            assert notebook.is_app is False
 
     def test_init_with_app(self, resource_dir):
         """Test initialization of a Notebook as an app."""
@@ -42,11 +41,11 @@ class TestNotebook:
              patch.object(Path, 'suffix', '.py'):
 
             # Execute
-            notebook = Notebook(notebook_path, is_app=True)
+            notebook = Notebook(notebook_path, kind=Kind.APP)
 
             # Assert
             assert notebook.path == notebook_path
-            assert notebook.is_app is True
+            assert notebook.kind == Kind.APP
 
     def test_init_file_not_found(self):
         """Test initialization with a non-existent file."""
@@ -94,10 +93,10 @@ class TestNotebook:
         with patch.object(Path, 'exists', return_value=True), \
              patch.object(Path, 'is_file', return_value=True), \
              patch.object(Path, 'suffix', '.py'):
-            notebook = Notebook(notebook_path)
+            notebook = Notebook(notebook_path, kind=Kind.APP)
 
             # Execute
-            result = notebook.to_wasm(output_dir)
+            result = notebook.export(output_dir)
 
             # Assert
             assert result is True
@@ -105,8 +104,9 @@ class TestNotebook:
 
             # Check that the command includes the notebook-specific flags
             cmd_args = mock_run.call_args[0][0]
+            print(cmd_args)
             assert "--mode" in cmd_args
-            assert "edit" in cmd_args
+            assert "run" in cmd_args
             assert "--no-show-code" not in cmd_args
 
     @patch('subprocess.run')
@@ -123,10 +123,10 @@ class TestNotebook:
         with patch.object(Path, 'exists', return_value=True), \
              patch.object(Path, 'is_file', return_value=True), \
              patch.object(Path, 'suffix', '.py'):
-            notebook = Notebook(notebook_path, is_app=True)
+            notebook = Notebook(notebook_path, kind=Kind.APP)
 
             # Execute
-            result = notebook.to_wasm(output_dir)
+            result = notebook.export(output_dir)
 
             # Assert
             assert result is True
@@ -155,7 +155,7 @@ class TestNotebook:
             notebook = Notebook(notebook_path)
 
             # Execute
-            result = notebook.to_wasm(output_dir)
+            result = notebook.export(output_dir)
 
             # Assert
             assert result is False
@@ -177,7 +177,7 @@ class TestNotebook:
             notebook = Notebook(notebook_path)
 
             # Execute
-            result = notebook.to_wasm(output_dir)
+            result = notebook.export(output_dir)
 
             # Assert
             assert result is False

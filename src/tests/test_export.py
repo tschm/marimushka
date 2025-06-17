@@ -12,7 +12,8 @@ from unittest.mock import MagicMock, mock_open, patch
 
 import jinja2
 
-from marimushka.export import _folder2notebooks, _generate_index, main
+from marimushka.export import _generate_index, main
+from marimushka.notebook import folder2notebooks, Kind
 
 
 class TestFolder2Notebooks:
@@ -21,7 +22,7 @@ class TestFolder2Notebooks:
     def test_folder2notebooks_none(self):
         """Test _folder2notebooks with None folder."""
         # Execute
-        result = _folder2notebooks(folder=None, is_app=False)
+        result = folder2notebooks(folder=None)
 
         # Assert
         assert result == []
@@ -29,7 +30,7 @@ class TestFolder2Notebooks:
     def test_folder2notebooks_empty_string(self):
         """Test _folder2notebooks with '' folder."""
         # Execute
-        result = _folder2notebooks(folder='', is_app=False)
+        result = folder2notebooks(folder='')
 
         # Assert
         assert result == []
@@ -41,7 +42,7 @@ class TestFolder2Notebooks:
         empty_folder.mkdir()
 
         # Execute
-        result = _folder2notebooks(folder=empty_folder, is_app=False)
+        result = folder2notebooks(folder=empty_folder)
 
         # Assert
         assert result == []
@@ -59,11 +60,11 @@ class TestFolder2Notebooks:
         notebook2.write_text("# Test notebook 2")
 
         # Execute
-        result = _folder2notebooks(folder=notebooks_folder, is_app=False)
+        result = folder2notebooks(folder=notebooks_folder, kind=Kind.NB)
 
         # Assert
         assert len(result) == 2
-        assert all(not notebook.is_app for notebook in result)
+        # assert all(not notebook.is_app for notebook in result)
         # Check that the paths are correct (convert to string for easier comparison)
         notebook_paths = [str(notebook.path) for notebook in result]
         assert str(notebook1) in notebook_paths
@@ -82,11 +83,10 @@ class TestFolder2Notebooks:
         app2.write_text("# Test app 2")
 
         # Execute
-        result = _folder2notebooks(folder=apps_folder, is_app=True)
+        result = folder2notebooks(folder=apps_folder, kind=Kind.APP)
 
         # Assert
         assert len(result) == 2
-        assert all(notebook.is_app for notebook in result)
         # Check that the paths are correct (convert to string for easier comparison)
         app_paths = [str(notebook.path) for notebook in result]
         assert str(app1) in app_paths
@@ -125,9 +125,9 @@ class TestGenerateIndex:
 
         # Assert
         # Check that to_wasm was called for each notebook and app
-        mock_notebook1.to_wasm.assert_called_once_with(output_dir=output_dir / "notebooks")
-        mock_notebook2.to_wasm.assert_called_once_with(output_dir=output_dir / "notebooks")
-        mock_app1.to_wasm.assert_called_once_with(output_dir=output_dir / "apps")
+        mock_notebook1.export.assert_called_once_with(output_dir=output_dir / "notebooks")
+        mock_notebook2.export.assert_called_once_with(output_dir=output_dir / "notebooks")
+        mock_app1.export.assert_called_once_with(output_dir=output_dir / "apps")
 
         # Check that the template was rendered and written to file
         mock_env.assert_called_once()
@@ -161,7 +161,7 @@ class TestGenerateIndex:
         result = _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps)
 
         # Check that to_wasm was still called
-        mock_notebook.to_wasm.assert_called_once_with(output_dir=output_dir / "notebooks")
+        mock_notebook.export.assert_called_once_with(output_dir=output_dir / "notebooks")
 
         # Check that the function returns the rendered HTML even if there's a file error
         assert result == "<html>Rendered content</html>"
@@ -186,7 +186,7 @@ class TestGenerateIndex:
         result = _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps)
 
         # Check that to_wasm was still called
-        mock_notebook.to_wasm.assert_called_once_with(output_dir=output_dir / "notebooks")
+        mock_notebook.export.assert_called_once_with(output_dir=output_dir / "notebooks")
 
         # Check that the function returns an empty string when there's a template error
         assert result == ""

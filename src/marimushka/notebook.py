@@ -27,7 +27,7 @@ class Kind(Enum):
             case Kind.NB_WASM:
                 return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "edit"]
             case Kind.APP:
-                return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "run"]
+                return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "run", "--no-show-code"]
 
     @property
     def html_path(self) -> Path:
@@ -123,7 +123,7 @@ class Notebook:
         return self.kind.html_path / f"{self.path.stem}.html"
 
 
-def folder2notebooks(folder: Path | str | None, kind: Kind) -> list[Notebook]:
+def folder2notebooks(folder: Path | str | None, kind: Kind = Kind.NB) -> list[Notebook]:
     """Find all marimo notebooks in a directory."""
     if folder is None or folder == "":
         return []

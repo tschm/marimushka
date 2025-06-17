@@ -75,14 +75,14 @@ def _generate_index(
 
     # Export notebooks to WebAssembly
     for nb in notebooks:
-        nb.to_wasm(output_dir=output / "notebooks")
+        nb.export(output_dir=output / "notebooks")
 
     # Export apps to WebAssembly
     for nb in apps:
-        nb.to_wasm(output_dir=output / "apps")
+        nb.export(output_dir=output / "apps")
 
     for nb in notebooks_wasm:
-        nb.to_wasm(output_dir=output / "notebooks_wasm")
+        nb.export(output_dir=output / "notebooks_wasm")
 
     # Create the full path for the index.html file
     index_path: Path = Path(output) / "index.html"
@@ -150,7 +150,7 @@ def _main_impl(
     # todo: add a few more flags here to export the notebooks in different formats
     # todo: fix the template
     notebooks_data = folder2notebooks(folder=notebooks, kind=Kind.NB)
-    apps_data = folder2notebooks(folder=apps, kind=Kind.APPS)
+    apps_data = folder2notebooks(folder=apps, kind=Kind.APP)
     notebooks_wasm_data = folder2notebooks(folder=notebooks_wasm, kind=Kind.NB_WASM)
 
     logger.info(f"# notebooks_data: {len(notebooks_data)}")
