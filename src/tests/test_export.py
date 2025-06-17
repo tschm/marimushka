@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, mock_open, patch
 import jinja2
 
 from marimushka.export import _generate_index, main
-from marimushka.notebook import folder2notebooks, Kind
+from marimushka.notebook import Kind, folder2notebooks
 
 
 class TestFolder2Notebooks:

@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from marimushka.notebook import Notebook, Kind
+from marimushka.notebook import Kind, Notebook
 
 
 class TestKind:
