@@ -149,9 +149,9 @@ def _main_impl(
 
     # todo: add a few more flags here to export the notebooks in different formats
     # todo: fix the template
-    notebooks_data = folder2notebooks(folder=notebooks, is_app=False)
-    apps_data = folder2notebooks(folder=apps, is_app=True)
-    notebooks_wasm_data = folder2notebooks(folder=notebooks_wasm, is_app=False)
+    notebooks_data = folder2notebooks(folder=notebooks, kind=Kind.NB)
+    apps_data = folder2notebooks(folder=apps, kind=Kind.APPS)
+    notebooks_wasm_data = folder2notebooks(folder=notebooks_wasm, kind=Kind.NB_WASM)
 
     logger.info(f"# notebooks_data: {len(notebooks_data)}")
     logger.info(f"# apps_data: {len(apps_data)}")
