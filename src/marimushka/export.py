@@ -49,7 +49,7 @@ def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]
         return []
 
     notebooks = list(Path(folder).rglob("*.py"))
-
+    # uvx marimo export html-wasm / html --sandbox (--mode edit/run) (
     return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
 
@@ -59,7 +59,7 @@ def _generate_index(
     notebooks: list[Notebook] | None = None,
     apps: list[Notebook] | None = None,
     notebooks_wasm: list[Notebook] | None = None,
-) -> None:
+) -> str:
     """Generate an index.html file that lists all the notebooks.
 
     This function creates an HTML index page that displays links to all the exported
@@ -75,7 +75,7 @@ def _generate_index(
         template_file (Path, optional): Path to the template file. If None, uses the default template.
 
     Returns:
-        None
+        str: The rendered HTML content as a string
 
     """
     # Initialize empty lists if None is provided
@@ -104,6 +104,7 @@ def _generate_index(
     template_dir = template_file.parent
     template_name = template_file.name
 
+    rendered_html = ""
     try:
         # Create Jinja2 environment and load template
         env = jinja2.Environment(
@@ -128,10 +129,12 @@ def _generate_index(
     except jinja2.exceptions.TemplateError as e:
         logger.error(f"Error rendering template {template_file}: {e}")
 
+    return rendered_html
+
 
 def _main_impl(
     output: str | Path, template: str | Path, notebooks: str | Path, apps: str | Path, notebooks_wasm: str | Path
-) -> None:
+) -> str:
     """Implement the main function.
 
     This function contains the actual implementation of the main functionality.
@@ -167,9 +170,9 @@ def _main_impl(
     # Exit if no notebooks or apps were found
     if not notebooks_data and not apps_data and not notebooks_wasm_data:
         logger.warning("No notebooks or apps found!")
-        return
+        return ""
 
-    _generate_index(
+    return _generate_index(
         output=output_dir,
         template_file=template_file,
         notebooks=notebooks_data,
@@ -184,16 +187,19 @@ def main(
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
     notebooks_wasm: str | Path = "notebooks",
-) -> None:
+) -> str:
     """Export marimo notebooks.
 
     This function:
 
     1. Exports all marimo notebooks in 'notebooks' and 'apps' directories
     2. Generates an index.html file that lists all the notebooks
+
+    Returns:
+        str: The rendered HTML content as a string
     """
-    # Call the implementation function with the provided parameters
-    _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
+    # Call the implementation function with the provided parameters and return its result
+    return _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
 
 
 @app.command(name="compile")

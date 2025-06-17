@@ -121,7 +121,7 @@ class TestGenerateIndex:
         mock_template.render.return_value = "<html>Rendered content</html>"
 
         # Execute
-        _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
+        result = _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
 
         # Assert
         # Check that to_wasm was called for each notebook and app
@@ -135,6 +135,9 @@ class TestGenerateIndex:
         mock_template.render.assert_called_once_with(notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
         mock_file_open.assert_called_once_with(output_dir / "index.html", "w")
         mock_file_open().write.assert_called_once_with("<html>Rendered content</html>")
+
+        # Check that the function returns the rendered HTML
+        assert result == "<html>Rendered content</html>"
 
     @patch.object(Path, 'open', side_effect=OSError("File error"))
     @patch('jinja2.Environment')
@@ -155,10 +158,13 @@ class TestGenerateIndex:
         mock_template.render.return_value = "<html>Rendered content</html>"
 
         # Execute and Assert (should not raise an exception)
-        _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps)
+        result = _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps)
 
         # Check that to_wasm was still called
         mock_notebook.to_wasm.assert_called_once_with(output_dir=output_dir / "notebooks")
+
+        # Check that the function returns the rendered HTML even if there's a file error
+        assert result == "<html>Rendered content</html>"
 
     @patch('jinja2.Environment')
     @patch.object(Path, 'mkdir')
@@ -177,10 +183,13 @@ class TestGenerateIndex:
         mock_env.side_effect = jinja2.exceptions.TemplateError("Template error")
 
         # Execute and Assert (should not raise an exception)
-        _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps)
+        result = _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps)
 
         # Check that to_wasm was still called
         mock_notebook.to_wasm.assert_called_once_with(output_dir=output_dir / "notebooks")
+
+        # Check that the function returns an empty string when there's a template error
+        assert result == ""
 
 
 class TestMain:
