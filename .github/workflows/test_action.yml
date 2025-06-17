@@ -44,7 +44,7 @@ jobs:
       # Step 4: Verify the downloaded artifact
       - name: Verify downloaded artifact
         run: |
-          tree /artifacts
+          tree artifacts
           if [ -f "/tmp/downloaded-marimo/index.html" ]; then
             echo "✅ Marimo artifact downloaded successfully"
           else
