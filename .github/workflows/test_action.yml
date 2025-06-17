@@ -46,12 +46,15 @@ jobs:
       - name: Verify downloaded artifact
         run: |
           tree artifacts
-          if [ -f "artifacts/marimushka/notebooks/fibonacci.html" ]; then
-            echo "✅ Marimo artifact downloaded successfully"
-          else
-            echo "❌ Failed to download marimo artifact"
-            exit 1
-          fi
+          assert Path("artifacts/marimushka/index.html").exists()
+          assert Path("artifacts/marimushka/notebooks/fibonacci.html").exists()
+          
+          #if [ -f "artifacts/marimushka/notebooks/fibonacci.html" ]; then
+          #  echo "✅ Marimo artifact downloaded successfully"
+          #else
+          #  echo "❌ Failed to download marimo artifact"
+          #  exit 1
+          #fi
 
   # Job to verify that the template file exists
   template:
