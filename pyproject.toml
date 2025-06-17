@@ -2,7 +2,7 @@
 name = 'marimushka'
 version = "0.0.0"
 description = "Export marimo notebooks in style"
-authors = [{name='Thomas Schmelzer', email= 'thomas.schmelzer@gmail.com'}]
+authors = [{name='Jebel Quant LLC', email= 'contact@jqr.ae'}]
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -19,7 +19,7 @@ dev = [
 ]
 
 [project.urls]
-repository = "https://github.com/tschm/marimushka"
+repository = "https://github.com/jebel-quant/marimushka"
 
 [build-system]
 requires = ["hatchling"]

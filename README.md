@@ -2,12 +2,12 @@
 
 [![PyPI version](https://badge.fury.io/py/marimushka.svg)](https://badge.fury.io/py/marimushka)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python Tests](https://img.shields.io/github/actions/workflow/status/tschm/marimushka/pytest.yml?label=tests)](https://github.com/tschm/marimushka/actions/workflows/pytest.yml)
+[![Python Tests](https://img.shields.io/github/actions/workflow/status/jebel-quant/marimushka/pytest.yml?label=tests)](https://github.com/jebel-quant/marimushka/actions/workflows/pytest.yml)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/tschm/marimushka/release.yml?label=release)](https://github.com/tschm/marimushka/actions/workflows/release.yml)
-[![GitHub stars](https://img.shields.io/github/stars/tschm/marimushka)](https://github.com/tschm/marimushka/stargazers)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jebel-quant/marimushka/release.yml?label=release)](https://github.com/jebel-quant/marimushka/actions/workflows/release.yml)
+[![GitHub stars](https://img.shields.io/github/stars/jebel-quant/marimushka)](https://github.com/jebel-quant/marimushka/stargazers)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Created with qCradle](https://img.shields.io/badge/Created%20with-qCradle-blue?style=flat-square)](https://github.com/tschm/package)
+[![Created with qCradle](https://img.shields.io/badge/Created%20with-qCradle-blue?style=flat-square)](https://github.com/jebel-quant/package)
 
 ## 🚀 Overview
 
@@ -56,7 +56,7 @@ uv pip install marimushka
 
 ```bash
 # Clone the repository
-git clone https://github.com/tschm/marimushka.git
+git clone https://github.com/jebel-quant/marimushka.git
 cd marimushka
 
 # Install dependencies using the Makefile
@@ -145,7 +145,7 @@ and deploy your notebooks:
 
 ```yaml
 - name: Export marimo notebooks
-  uses: tschm/marimushka/actions/export@main
+  uses: jebel-quant/marimushka/actions/export@main
   with:
     template: 'path/to/template.html.j2'  # Optional: custom template
     notebooks: 'notebooks'                # Optional: notebooks directory
@@ -274,7 +274,7 @@ Contributions are welcome! Here's how you can contribute:
 
 ```bash
 # Clone the repository
-git clone https://github.com/tschm/marimushka.git
+git clone https://github.com/jebel-quant/marimushka.git
 cd marimushka
 
 # Install dependencies

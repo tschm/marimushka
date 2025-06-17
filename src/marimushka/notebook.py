@@ -18,27 +18,34 @@ class Kind(Enum):
     NB_WASM = "notebook_wasm"
     APP = "app"
 
+    @classmethod
+    def from_str(cls, value: str) -> "Kind":
+        try:
+            return Kind(value)
+        except ValueError:
+            raise ValueError(f"Invalid Kind: {value!r}. Must be one of {[k.value for k in Kind]}")
+
     @property
     def command(self) -> list[str]:
-        """Command used for export."""
-        match self:
-            case Kind.NB:
-                return ["uvx", "marimo", "export", "html", "--sandbox"]
-            case Kind.NB_WASM:
-                return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "edit"]
-            case Kind.APP:
-                return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "run", "--no-show-code"]
+        commands = {
+            Kind.NB: ["uvx", "marimo", "export", "html", "--sandbox"],
+            Kind.NB_WASM: ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "edit"],
+            Kind.APP: ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "run", "--no-show-code"],
+        }
+        return commands[self]
+
 
     @property
     def html_path(self) -> Path:
-        """Path for html."""
-        match self:
-            case Kind.NB:
-                return Path("notebooks")
-            case Kind.NB_WASM:
-                return Path("notebooks_wasm")
-            case Kind.APP:
-                return Path("apps")
+        """Path for HTML."""
+        paths = {
+            Kind.NB: Path("notebooks"),
+            Kind.NB_WASM: Path("notebooks_wasm"),
+            Kind.APP: Path("apps"),
+        }
+        return paths[self]
+
+
 
 
 @dataclasses.dataclass(frozen=True)
@@ -100,7 +107,6 @@ class Notebook:
             # Run marimo export command
             logger.debug(f"Running command: {cmd}")
             subprocess.run(cmd, capture_output=True, text=True, check=True)
-            # logger_instance.info(f"Successfully exported {self.path.stem}")
             return True
         except subprocess.CalledProcessError as e:
             # Handle marimo export errors

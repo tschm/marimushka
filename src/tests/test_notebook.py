@@ -13,6 +13,18 @@ from marimushka.notebook import Kind, Notebook
 
 class TestKind:
     """Tests for the Kind enum."""
+    def test_from_string(self):
+        kind = Kind.from_str("notebook")
+        assert kind == Kind.NB
+
+        kind = Kind.from_str("notebook_wasm")
+        assert kind == Kind.NB_WASM
+
+        kind = Kind.from_str("app")
+        assert kind == Kind.APP
+
+        with pytest.raises(ValueError):
+            Kind.from_str("invalid_kind")
 
     def test_html_path(self):
         """Test the html_path property of the Kind enum."""
@@ -22,7 +34,7 @@ class TestKind:
         assert Kind.APP.html_path == Path("apps")
 
     def test_command(self):
-        """Test the command property of the Kind enum."""
+        """Test the command method of the Kind enum."""
         # Test all three enum values
         assert Kind.NB.command == ["uvx", "marimo", "export", "html", "--sandbox"]
         assert Kind.NB_WASM.command == ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "edit"]
