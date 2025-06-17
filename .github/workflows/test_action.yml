@@ -51,7 +51,7 @@ jobs:
 
           [ ! -f "artifacts/marimushka/index.html" ] && exit 1
           [ ! -f "artifacts/marimushka/notebooks/fibonacci.html" ] && exit 1
-          
+
           #if [ -f "artifacts/marimushka/notebooks/fibonacci.html" ]; then
           #  echo "✅ Marimo artifact downloaded successfully"
           #else
