@@ -31,10 +31,11 @@ class Kind(Enum):
         match self:
             case Kind.NB:
                 return Path("notebooks")
-            case Kind.NB_WASM
+            case Kind.NB_WASM:
                 return Path("notebooks_wasm")
-            case Kind.APP
+            case Kind.APP:
                 return Path("apps")
+
 
 def folder2notebooks(folder: Path | str | None, kind: Kind) -> list[Notebook]:
     """Find all marimo notebooks in a directory."""
@@ -47,7 +48,6 @@ def folder2notebooks(folder: Path | str | None, kind: Kind) -> list[Notebook]:
     # uvx marimo export html-wasm / html --sandbox (--mode edit/run) (
     return [Notebook(path=nb, kind=kind) for nb in notebooks]
     
-
 @dataclasses.dataclass(frozen=True)
 class Notebook:
     """Represents a marimo notebook.
