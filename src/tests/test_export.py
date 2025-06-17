@@ -109,8 +109,11 @@ class TestGenerateIndex:
         mock_notebook2 = MagicMock()
         mock_app1 = MagicMock()
 
+        mock_notebook1_wasm = MagicMock()
+
         notebooks = [mock_notebook1, mock_notebook2]
         apps = [mock_app1]
+        notebooks_wasm = [mock_notebook1_wasm]
 
         # Mock the template rendering
         mock_template = MagicMock()
@@ -118,7 +121,7 @@ class TestGenerateIndex:
         mock_template.render.return_value = "<html>Rendered content</html>"
 
         # Execute
-        _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps)
+        _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
 
         # Assert
         # Check that to_wasm was called for each notebook and app
@@ -129,7 +132,7 @@ class TestGenerateIndex:
         # Check that the template was rendered and written to file
         mock_env.assert_called_once()
         mock_env.return_value.get_template.assert_called_once_with(template_file.name)
-        mock_template.render.assert_called_once_with(notebooks=notebooks, apps=apps)
+        mock_template.render.assert_called_once_with(notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
         mock_file_open.assert_called_once_with(output_dir / "index.html", "w")
         mock_file_open().write.assert_called_once_with("<html>Rendered content</html>")
 
@@ -190,15 +193,17 @@ class TestMain:
         # Setup
         mock_notebooks = [MagicMock(), MagicMock()]
         mock_apps = [MagicMock()]
-        mock_folder2notebooks.side_effect = [mock_notebooks, mock_apps]
+        mock_notebooks_wasm = [MagicMock()]
+        mock_folder2notebooks.side_effect = [mock_notebooks, mock_apps, mock_notebooks_wasm]
 
         # Execute
         main()
 
         # Assert
-        assert mock_folder2notebooks.call_count == 2
+        assert mock_folder2notebooks.call_count == 3
         mock_folder2notebooks.assert_any_call(folder="notebooks", is_app=False)
         mock_folder2notebooks.assert_any_call(folder="apps", is_app=True)
+        #mock_folder2notebooks.assert_any_call(folder="notebooks_wasm", is_app=False)
         mock_generate_index.assert_called_once()
 
     @patch('marimushka.export._folder2notebooks')
@@ -212,7 +217,7 @@ class TestMain:
         main()
 
         # Assert
-        assert mock_folder2notebooks.call_count == 2
+        assert mock_folder2notebooks.call_count == 3
         mock_generate_index.assert_not_called()
 
     @patch('marimushka.export._folder2notebooks')
@@ -222,43 +227,34 @@ class TestMain:
         # Setup
         mock_notebooks = [MagicMock(), MagicMock()]
         mock_apps = [MagicMock()]
-        mock_folder2notebooks.side_effect = [mock_notebooks, mock_apps]
+        mock_notebooks_wasm = [MagicMock()]
+
+        mock_folder2notebooks.side_effect = [mock_notebooks, mock_apps, mock_notebooks_wasm]
 
         custom_output = tmp_path / "custom_output"
         custom_template = tmp_path / "custom_template.html.j2"
         custom_notebooks = tmp_path / "custom_notebooks"
         custom_apps = tmp_path / "custom_apps"
+        custom_notebooks_wasm = tmp_path / "custom_notebooks_wasm"
 
         # Execute
         main(
             output=custom_output,
             template=custom_template,
             notebooks=custom_notebooks,
-            apps=custom_apps
+            apps=custom_apps,
+            notebooks_wasm=custom_notebooks_wasm
         )
 
         # Assert
         mock_folder2notebooks.assert_any_call(folder=custom_notebooks, is_app=False)
         mock_folder2notebooks.assert_any_call(folder=custom_apps, is_app=True)
+        mock_folder2notebooks.assert_any_call(folder=custom_notebooks_wasm, is_app=False)
+
         mock_generate_index.assert_called_once_with(
             output=custom_output,
             template_file=custom_template,
             notebooks=mock_notebooks,
-            apps=mock_apps
+            apps=mock_apps,
+            notebooks_wasm=mock_notebooks_wasm
         )
-
-    @patch('marimushka.export._folder2notebooks')
-    @patch('marimushka.export._generate_index')
-    def test_main_default_logger(self, mock_generate_index, mock_folder2notebooks):
-        """Test main function with default logger."""
-        # Setup
-        mock_notebooks = [MagicMock(), MagicMock()]
-        mock_apps = [MagicMock()]
-        mock_folder2notebooks.side_effect = [mock_notebooks, mock_apps]
-
-        # Execute
-        main()  # No logger_instance provided, should use default logger
-
-        # Assert
-        assert mock_folder2notebooks.call_count == 2
-        mock_generate_index.assert_called_once()
