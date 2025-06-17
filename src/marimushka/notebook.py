@@ -136,4 +136,4 @@ class Notebook:
     @property
     def html_path(self) -> Path:
         """Return the path to the exported HTML file."""
-        return self.kind.path / f"{self.path.stem}.html"
+        return self.kind.html_path / f"{self.path.stem}.html"
