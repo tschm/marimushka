@@ -5,19 +5,22 @@ This module provides the Notebook class for representing and exporting marimo no
 
 import dataclasses
 import subprocess
+from enum import Enum
 from pathlib import Path
 
 from loguru import logger
 
-from enum import Enum
-
 class Kind(Enum):
+    """Kind of notebook."""
+    
     NB = "notebook"
     NB_WASM = "notebook_wasm"
     APP = "app"
 
     @property
     def command(self) -> list[str]:
+        """command used for export."""
+        
         match self:
             case Kind.NB:
                 return ["uvx", "marimo", "export", "html", "--sandbox"]
@@ -28,6 +31,8 @@ class Kind(Enum):
 
     @property
     def html_path(self) -> Path:
+        """path for html."""
+        
         match self:
             case Kind.NB:
                 return Path("notebooks")
