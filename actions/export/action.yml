@@ -37,7 +37,7 @@ runs:
         set -e  # Exit on error
 
         # Path to default template in this action's directory
-        DEFAULT_TEMPLATE="${{ github.action_path }}/template/tailwind.html.j2"
+        DEFAULT_TEMPLATE="${{ github.action_path }}/templates/tailwind.html.j2"
 
         # Use provided template if set, otherwise fallback
         if [ -z "${{ inputs.template }}" ]; then

@@ -33,7 +33,7 @@ jobs:
           # Only specify the notebooks folder, leave apps empty to test that scenario
           notebooks: 'src/tests/resources/notebooks'
           apps: ''
-          template: 'src/tests/resources/templates/tailwind.html.j2'
+          #template: 'src/tests/resources/templates/tailwind.html.j2'
 
       # Step 3: Download the marimo artifact
       # This step downloads the artifact created by the export action
