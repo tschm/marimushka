@@ -17,10 +17,6 @@ inputs:
     description: 'The folder for interactive notebooks'
     required: false
     default: 'notebooks'
-  publish:
-    description: 'Whether to publish the exported notebooks to GitHub Pages'
-    required: false
-    default: 'false'
 
 runs:
   using: "composite"
@@ -68,16 +64,11 @@ runs:
           --apps "${{ inputs.apps }}" \
           --notebooks "${{ inputs.notebooks }}"
 
-        # If publish is true, perform additional steps for GitHub Pages
-        if [ "${{ inputs.publish }}" = "true" ]; then
-          echo "Performing additional steps for publishing to GitHub Pages..."
-
-          # Create .nojekyll file to prevent GitHub Pages from processing with Jekyll
-          touch "$OUTPUT_DIR/.nojekyll"
-          echo "Created .nojekyll file"
-
-          echo "Additional publishing steps completed"
-        fi
+        # Create .nojekyll file to prevent GitHub Pages from processing with Jekyll
+        touch "$OUTPUT_DIR/.nojekyll"
+        echo "Created .nojekyll file"
+        
+        echo "Publish the 'marimo' artifact"
 
 
     - name: 📤 Upload HTML artifacts
@@ -86,11 +77,3 @@ runs:
         name: marimo
         path: /tmp/marimushka
         retention-days: 1
-
-    - name: 🌐 Deploy to GitHub Pages
-      if: ${{ inputs.publish == 'true' }}
-      uses: JamesIves/github-pages-deploy-action@v4
-      with:
-        folder: /tmp/marimushka
-        branch: gh-pages
-        clean: true
