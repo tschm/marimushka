@@ -13,25 +13,6 @@ permissions:
   contents: write  # Write access to repository contents for GitHub Pages deployment
 
 jobs:
-#  test:
-#    # The type of runner that the job will run on
-#    runs-on: ubuntu-latest
-#
-#    # Steps represent a sequence of tasks that will be executed as part of the job
-#    steps:
-#      # Step 1: Checkout the repository code
-#      - name: Checkout ${{ github.repository }}
-#        uses: actions/checkout@v4
-#
-#      # Step 2: Build the virtual environment with the specified Python version
-#      - name: "Build the virtual environment for ${{ github.repository }}"
-#        uses: ./actions/export
-#        with:
-#          notebooks: 'src/tests/resources/notebooks'
-#          apps: 'src/tests/resources/apps'
-#          template: 'src/tests/resources/templates/default.html.j2'
-
-
   # Job to test exporting only notebooks (no apps)
   test-only-notebooks:
     # The type of runner that the job will run on
@@ -50,7 +31,24 @@ jobs:
           # Only specify the notebooks folder, leave apps empty to test that scenario
           notebooks: 'src/tests/resources/notebooks'
           apps: ''
-          publish: 'true'  # Enable publishing to test that functionality
+
+      # Step 3: Download the marimo artifact
+      # This step downloads the artifact created by the export action
+      - name: Download marimo artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      # Step 4: Verify the downloaded artifact
+      - name: Verify downloaded artifact
+        run: |
+          tree /artifacts
+          if [ -f "/tmp/downloaded-marimo/index.html" ]; then
+            echo "✅ Marimo artifact downloaded successfully"
+          else
+            echo "❌ Failed to download marimo artifact"
+            exit 1
+          fi
 
   # Job to verify that the template file exists
   template:
