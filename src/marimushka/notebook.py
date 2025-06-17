@@ -41,17 +41,6 @@ class Kind(Enum):
             case Kind.APP:
                 return Path("apps")
 
-
-def folder2notebooks(folder: Path | str | None, kind: Kind) -> list[Notebook]:
-    """Find all marimo notebooks in a directory."""
-    if folder is None or folder == "":
-        return []
-
-    # which files are included here?
-    notebooks = list(Path(folder).rglob("*.py"))
-
-    # uvx marimo export html-wasm / html --sandbox (--mode edit/run) (
-    return [Notebook(path=nb, kind=kind) for nb in notebooks]
     
 @dataclasses.dataclass(frozen=True)
 class Notebook:
@@ -142,3 +131,15 @@ class Notebook:
     def html_path(self) -> Path:
         """Return the path to the exported HTML file."""
         return self.kind.html_path / f"{self.path.stem}.html"
+
+
+def folder2notebooks(folder: Path | str | None, kind: Kind) -> list[Notebook]:
+    """Find all marimo notebooks in a directory."""
+    if folder is None or folder == "":
+        return []
+
+    # which files are included here?
+    notebooks = list(Path(folder).rglob("*.py"))
+
+    # uvx marimo export html-wasm / html --sandbox (--mode edit/run) (
+    return [Notebook(path=nb, kind=kind) for nb in notebooks]
