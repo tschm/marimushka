@@ -10,17 +10,17 @@ from pathlib import Path
 
 from loguru import logger
 
+
 class Kind(Enum):
     """Kind of notebook."""
-    
+
     NB = "notebook"
     NB_WASM = "notebook_wasm"
     APP = "app"
 
     @property
     def command(self) -> list[str]:
-        """command used for export."""
-        
+        """Command used for export."""
         match self:
             case Kind.NB:
                 return ["uvx", "marimo", "export", "html", "--sandbox"]
@@ -31,8 +31,7 @@ class Kind(Enum):
 
     @property
     def html_path(self) -> Path:
-        """path for html."""
-        
+        """Path for html."""
         match self:
             case Kind.NB:
                 return Path("notebooks")
@@ -41,7 +40,7 @@ class Kind(Enum):
             case Kind.APP:
                 return Path("apps")
 
-    
+
 @dataclasses.dataclass(frozen=True)
 class Notebook:
     """Represents a marimo notebook.
@@ -52,6 +51,7 @@ class Notebook:
     Attributes:
         path (Path): Path to the marimo notebook (.py file)
         kind (Kind): How the notebook ts treated
+
     """
 
     path: Path
@@ -98,7 +98,7 @@ class Notebook:
             cmd.extend([str(self.path), "-o", str(output_file)])
 
             # Run marimo export command
-            logger_instance.debug(f"Running command: {cmd}")
+            logger.debug(f"Running command: {cmd}")
             subprocess.run(cmd, capture_output=True, text=True, check=True)
             # logger_instance.info(f"Successfully exported {self.path.stem}")
             return True
