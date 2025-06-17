@@ -87,17 +87,7 @@ class Notebook:
             bool: True if export succeeded, False otherwise
 
         """
-        # Base command for marimo export
-        # cmd: list[str] = ["uvx", "marimo", "export", "html-wasm", "--sandbox"]
-
-        # Configure export mode based on whether it's an app or a notebook
-        #if self.is_app:
-        #    logger.info(f"Export {self.path.stem} as app")
         cmd = self.kind.command
-        #cmd.extend(["--mode", "run", "--no-show-code"])  # Apps run in "run" mode with hidden code
-        #else:
-        #    logger.info(f"Export {self.path.stem} as notebook")
-        #    cmd.extend(["--mode", "edit"])  # Notebooks run in "edit" mode
 
         try:
             # Create the full output path and ensure the directory exists
@@ -108,7 +98,7 @@ class Notebook:
             cmd.extend([str(self.path), "-o", str(output_file)])
 
             # Run marimo export command
-            # logger_instance.debug(f"Running command: {cmd}")
+            logger_instance.debug(f"Running command: {cmd}")
             subprocess.run(cmd, capture_output=True, text=True, check=True)
             # logger_instance.info(f"Successfully exported {self.path.stem}")
             return True
