@@ -173,21 +173,34 @@ def _main_impl(
 
 def main(
     output: str | Path = "_site",
-    template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
+    template: str | Path = Path(__file__).parent / "templates" / "tailwind.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
     notebooks_wasm: str | Path = "notebooks",
 ) -> str:
-    """Export marimo notebooks.
+    """
+    Call the implementation function with the provided parameters and return its result.
 
-    This function:
-
-    1. Exports all marimo notebooks in 'notebooks' and 'apps' directories
-    2. Generates an index.html file that lists all the notebooks
+    Parameters:
+    output: str | Path
+        The output directory where generated files will be stored.
+        Defaults to "_site".
+    template: str | Path
+        Path to the template file used during the generation process.
+        Defaults to a predefined "tailwind.html.j2" file.
+    notebooks: str | Path
+        Directory containing the notebooks to be processed.
+        Defaults to "notebooks".
+    apps: str | Path
+        Directory containing application files. Defaults to "apps".
+    notebooks_wasm: str | Path
+        Directory containing WebAssembly-related files for notebooks.
+        Defaults to "notebooks".
 
     Returns:
-        str: The rendered HTML content as a string
-
+    str
+        The result returned by the implementation function, representing the
+        completion of the generation process or final outcome.
     """
     # Call the implementation function with the provided parameters and return its result
     return _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
@@ -197,7 +210,7 @@ def main(
 def _main_typer(
     output: str = typer.Option("_site", "--output", "-o", help="Directory where the exported files will be saved"),
     template: str = typer.Option(
-        str(Path(__file__).parent / "templates" / "default.html.j2"),
+        str(Path(__file__).parent / "templates" / "tailwind.html.j2"),
         "--template",
         "-t",
         help="Path to the template file",
@@ -208,13 +221,7 @@ def _main_typer(
         "notebooks", "--notebooks-wasm", "-nw", help="Directory containing marimo notebooks"
     ),
 ) -> None:
-    """Export marimo notebooks.
-
-    This command:
-
-    1. Exports all marimo notebooks in 'notebooks' and 'apps' directories
-    2. Generates an index.html file that lists all the notebooks
-    """
+    """Export marimo notebooks and build an HTML index page linking to them."""
     # When called through Typer, the parameters might be typer.Option objects
     # Extract the default values from the Option objects if necessary
     output_val = getattr(output, "default", output)
