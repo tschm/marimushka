@@ -4,7 +4,10 @@ repos:
     hooks:
       - id: check-toml
       - id: end-of-file-fixer
+        exclude: src/tests/resources/html_output
+
       - id: trailing-whitespace
+        exclude: src/tests/resources/html_output
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: 'v0.11.13'
