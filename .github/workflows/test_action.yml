@@ -59,6 +59,30 @@ jobs:
           #  exit 1
           #fi
 
+  book:
+    runs-on: ubuntu-latest
+    needs: test-only-notebooks
+    permissions:
+      contents: write
+
+    steps:
+      # Step 3: Download the marimo artifact
+      # This step downloads the artifact created by the export action
+      - name: Download marimo artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      # Step 4: Verify the downloaded artifact
+      - name: Verify downloaded artifact
+        run: |
+          tree artifacts
+          assert Path("artifacts/marimushka/index.html").exists()
+          assert Path("artifacts/marimushka/notebooks/fibonacci.html").exists()
+
+          [ ! -f "artifacts/marimushka/index.html" ] && exit 1
+          [ ! -f "artifacts/marimushka/notebooks/fibonacci.html" ] && exit 1
+
   # Job to verify that the template file exists
   template:
     runs-on: ubuntu-latest
