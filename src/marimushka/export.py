@@ -197,6 +197,7 @@ def main(
 
     Returns:
         str: The rendered HTML content as a string
+
     """
     # Call the implementation function with the provided parameters and return its result
     return _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)

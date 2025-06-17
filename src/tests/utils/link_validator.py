@@ -4,12 +4,11 @@ This module provides functions to extract and validate links from HTML content.
 """
 
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
 
 from bs4 import BeautifulSoup
 
 
-def extract_links(html_content: str) -> Dict[str, List[str]]:
+def extract_links(html_content: str) -> dict[str, list[str]]:
     """Extract all links from HTML content.
 
     Args:
@@ -18,16 +17,17 @@ def extract_links(html_content: str) -> Dict[str, List[str]]:
     Returns:
         Dict[str, List[str]]: A dictionary with link types as keys and lists of links as values.
             The link types are 'internal', 'external', and 'image'.
+
     """
     soup = BeautifulSoup(html_content, 'html.parser')
-    
+
     # Extract links from <a> tags
     links = {
         'internal': [],
         'external': [],
         'image': []
     }
-    
+
     # Extract links from <a> tags
     for a_tag in soup.find_all('a', href=True):
         href = a_tag['href']
@@ -35,16 +35,16 @@ def extract_links(html_content: str) -> Dict[str, List[str]]:
             links['external'].append(href)
         else:
             links['internal'].append(href)
-    
+
     # Extract links from <img> tags
     for img_tag in soup.find_all('img', src=True):
         src = img_tag['src']
         links['image'].append(src)
-    
+
     return links
 
 
-def validate_internal_links(links: List[str], output_dir: Path) -> Tuple[bool, Set[str]]:
+def validate_internal_links(links: list[str], output_dir: Path) -> tuple[bool, set[str]]:
     """Validate internal links by checking if the referenced files exist.
 
     Args:
@@ -54,20 +54,21 @@ def validate_internal_links(links: List[str], output_dir: Path) -> Tuple[bool, S
     Returns:
         Tuple[bool, Set[str]]: A tuple containing a boolean indicating if all links are valid,
             and a set of invalid links.
+
     """
     invalid_links = set()
-    
+
     for link in links:
         # Handle relative paths
         link_path = output_dir / link
-        
+
         if not link_path.exists():
             invalid_links.add(link)
-    
+
     return len(invalid_links) == 0, invalid_links
 
 
-def validate_links(html_content: str, output_dir: Path) -> Tuple[bool, Dict[str, Set[str]]]:
+def validate_links(html_content: str, output_dir: Path) -> tuple[bool, dict[str, set[str]]]:
     """Validate all links in the HTML content.
 
     Args:
@@ -77,20 +78,21 @@ def validate_links(html_content: str, output_dir: Path) -> Tuple[bool, Dict[str,
     Returns:
         Tuple[bool, Dict[str, Set[str]]]: A tuple containing a boolean indicating if all links are valid,
             and a dictionary with link types as keys and sets of invalid links as values.
+
     """
     links = extract_links(html_content)
-    
+
     # Validate internal links
     internal_valid, invalid_internal = validate_internal_links(links['internal'], output_dir)
-    
+
     # For now, we'll assume all external links and image links are valid
     # In a real-world scenario, you might want to check these as well
-    
+
     all_valid = internal_valid
     invalid_links = {
         'internal': invalid_internal,
         'external': set(),
         'image': set()
     }
-    
+
     return all_valid, invalid_links

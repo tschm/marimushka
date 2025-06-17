@@ -10,14 +10,14 @@ class TestExtractLinks:
         """Test extracting links from empty HTML."""
         html_content = ""
         links = extract_links(html_content)
-        
+
         assert links == {'internal': [], 'external': [], 'image': []}
 
     def test_extract_links_no_links(self):
         """Test extracting links from HTML with no links."""
         html_content = "<html><body><p>No links here</p></body></html>"
         links = extract_links(html_content)
-        
+
         assert links == {'internal': [], 'external': [], 'image': []}
 
     def test_extract_links_internal(self):
@@ -31,7 +31,7 @@ class TestExtractLinks:
         </html>
         """
         links = extract_links(html_content)
-        
+
         assert set(links['internal']) == {'notebooks/test.html', 'apps/app.html'}
         assert links['external'] == []
         assert links['image'] == []
@@ -48,7 +48,7 @@ class TestExtractLinks:
         </html>
         """
         links = extract_links(html_content)
-        
+
         assert links['internal'] == []
         assert set(links['external']) == {'https://example.com', 'http://test.com', '//cdn.example.com'}
         assert links['image'] == []
@@ -64,7 +64,7 @@ class TestExtractLinks:
         </html>
         """
         links = extract_links(html_content)
-        
+
         assert links['internal'] == []
         assert links['external'] == []
         assert set(links['image']) == {'image.jpg', 'https://example.com/image.png'}
@@ -81,7 +81,7 @@ class TestExtractLinks:
         </html>
         """
         links = extract_links(html_content)
-        
+
         assert links['internal'] == ['notebooks/test.html']
         assert links['external'] == ['https://example.com']
         assert links['image'] == ['image.jpg']
@@ -94,7 +94,7 @@ class TestValidateInternalLinks:
         """Test validating empty list of internal links."""
         links = []
         valid, invalid = validate_internal_links(links, tmp_path)
-        
+
         assert valid is True
         assert invalid == set()
 
@@ -105,10 +105,10 @@ class TestValidateInternalLinks:
         notebooks_dir.mkdir()
         test_file = notebooks_dir / "test.html"
         test_file.write_text("Test content")
-        
+
         links = ["notebooks/test.html"]
         valid, invalid = validate_internal_links(links, tmp_path)
-        
+
         assert valid is True
         assert invalid == set()
 
@@ -116,7 +116,7 @@ class TestValidateInternalLinks:
         """Test validating invalid internal links."""
         links = ["notebooks/nonexistent.html"]
         valid, invalid = validate_internal_links(links, tmp_path)
-        
+
         assert valid is False
         assert invalid == {"notebooks/nonexistent.html"}
 
@@ -127,10 +127,10 @@ class TestValidateInternalLinks:
         notebooks_dir.mkdir()
         test_file = notebooks_dir / "test.html"
         test_file.write_text("Test content")
-        
+
         links = ["notebooks/test.html", "notebooks/nonexistent.html"]
         valid, invalid = validate_internal_links(links, tmp_path)
-        
+
         assert valid is False
         assert invalid == {"notebooks/nonexistent.html"}
 
@@ -142,7 +142,7 @@ class TestValidateLinks:
         """Test validating links in empty HTML."""
         html_content = ""
         valid, invalid = validate_links(html_content, tmp_path)
-        
+
         assert valid is True
         assert invalid == {'internal': set(), 'external': set(), 'image': set()}
 
@@ -153,7 +153,7 @@ class TestValidateLinks:
         notebooks_dir.mkdir()
         test_file = notebooks_dir / "test.html"
         test_file.write_text("Test content")
-        
+
         html_content = """
         <html>
             <body>
@@ -164,7 +164,7 @@ class TestValidateLinks:
         </html>
         """
         valid, invalid = validate_links(html_content, tmp_path)
-        
+
         assert valid is True
         assert invalid == {'internal': set(), 'external': set(), 'image': set()}
 
@@ -178,7 +178,7 @@ class TestValidateLinks:
         </html>
         """
         valid, invalid = validate_links(html_content, tmp_path)
-        
+
         assert valid is False
         assert invalid == {'internal': {'notebooks/nonexistent.html'}, 'external': set(), 'image': set()}
 
@@ -189,7 +189,7 @@ class TestValidateLinks:
         notebooks_dir.mkdir()
         test_file = notebooks_dir / "test.html"
         test_file.write_text("Test content")
-        
+
         html_content = """
         <html>
             <body>
@@ -201,6 +201,6 @@ class TestValidateLinks:
         </html>
         """
         valid, invalid = validate_links(html_content, tmp_path)
-        
+
         assert valid is False
         assert invalid == {'internal': {'notebooks/nonexistent.html'}, 'external': set(), 'image': set()}
