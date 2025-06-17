@@ -26,7 +26,7 @@ import typer
 from loguru import logger
 from rich import print as rich_print
 
-from marimushka.notebook import Notebook
+from marimushka.notebook import Notebook, folder2notebooks, Kind
 
 from . import __version__
 
@@ -41,16 +41,6 @@ def callback(ctx: typer.Context):
         print(ctx.get_help())
         # Exit with code 0 to indicate success
         raise typer.Exit()
-
-
-def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]:
-    """Find all marimo notebooks in a directory."""
-    if folder is None or folder == "":
-        return []
-
-    notebooks = list(Path(folder).rglob("*.py"))
-    # uvx marimo export html-wasm / html --sandbox (--mode edit/run) (
-    return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
 
 
 def _generate_index(
@@ -159,9 +149,9 @@ def _main_impl(
 
     # todo: add a few more flags here to export the notebooks in different formats
     # todo: fix the template
-    notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
-    apps_data = _folder2notebooks(folder=apps, is_app=True)
-    notebooks_wasm_data = _folder2notebooks(folder=notebooks_wasm, is_app=False)
+    notebooks_data = folder2notebooks(folder=notebooks, is_app=False)
+    apps_data = folder2notebooks(folder=apps, is_app=True)
+    notebooks_wasm_data = folder2notebooks(folder=notebooks_wasm, is_app=False)
 
     logger.info(f"# notebooks_data: {len(notebooks_data)}")
     logger.info(f"# apps_data: {len(apps_data)}")
