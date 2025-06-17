@@ -195,7 +195,7 @@ class TestGenerateIndex:
 class TestMain:
     """Tests for the main function."""
 
-    @patch('marimushka.export._folder2notebooks')
+    @patch('marimushka.export.folder2notebooks')
     @patch('marimushka.export._generate_index')
     def test_main_success(self, mock_generate_index, mock_folder2notebooks):
         """Test successful execution of the main function."""
@@ -210,12 +210,12 @@ class TestMain:
 
         # Assert
         assert mock_folder2notebooks.call_count == 3
-        mock_folder2notebooks.assert_any_call(folder="notebooks", is_app=False)
-        mock_folder2notebooks.assert_any_call(folder="apps", is_app=True)
-        #mock_folder2notebooks.assert_any_call(folder="notebooks_wasm", is_app=False)
+        mock_folder2notebooks.assert_any_call(folder="notebooks", kind=Kind.NB)
+        mock_folder2notebooks.assert_any_call(folder="apps", kind=Kind.APP)
+        mock_folder2notebooks.assert_any_call(folder="notebooks", kind=Kind.NB_WASM)
         mock_generate_index.assert_called_once()
 
-    @patch('marimushka.export._folder2notebooks')
+    @patch('marimushka.export.folder2notebooks')
     @patch('marimushka.export._generate_index')
     def test_main_no_notebooks_or_apps(self, mock_generate_index, mock_folder2notebooks):
         """Test handling of no notebooks or apps found."""
@@ -227,9 +227,12 @@ class TestMain:
 
         # Assert
         assert mock_folder2notebooks.call_count == 3
+        mock_folder2notebooks.assert_any_call(folder="notebooks", kind=Kind.NB)
+        mock_folder2notebooks.assert_any_call(folder="apps", kind=Kind.APP)
+        mock_folder2notebooks.assert_any_call(folder="notebooks", kind=Kind.NB_WASM)
         mock_generate_index.assert_not_called()
 
-    @patch('marimushka.export._folder2notebooks')
+    @patch('marimushka.export.folder2notebooks')
     @patch('marimushka.export._generate_index')
     def test_main_custom_paths(self, mock_generate_index, mock_folder2notebooks, tmp_path):
         """Test main function with custom paths."""
@@ -256,9 +259,9 @@ class TestMain:
         )
 
         # Assert
-        mock_folder2notebooks.assert_any_call(folder=custom_notebooks, is_app=False)
-        mock_folder2notebooks.assert_any_call(folder=custom_apps, is_app=True)
-        mock_folder2notebooks.assert_any_call(folder=custom_notebooks_wasm, is_app=False)
+        mock_folder2notebooks.assert_any_call(folder=custom_notebooks, kind=Kind.NB)
+        mock_folder2notebooks.assert_any_call(folder=custom_apps, kind=Kind.APP)
+        mock_folder2notebooks.assert_any_call(folder=custom_notebooks_wasm, kind=Kind.NB_WASM)
 
         mock_generate_index.assert_called_once_with(
             output=custom_output,

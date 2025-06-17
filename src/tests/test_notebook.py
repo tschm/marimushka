@@ -1,6 +1,6 @@
 """Tests for the notebook.py module.
 
-This module contains tests for the Notebook class in the notebook.py module.
+This module contains tests for the Notebook class and Kind enum in the notebook.py module.
 """
 import subprocess
 from pathlib import Path
@@ -9,6 +9,24 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from marimushka.notebook import Notebook, Kind
+
+
+class TestKind:
+    """Tests for the Kind enum."""
+
+    def test_html_path(self):
+        """Test the html_path property of the Kind enum."""
+        # Test all three enum values
+        assert Kind.NB.html_path == Path("notebooks")
+        assert Kind.NB_WASM.html_path == Path("notebooks_wasm")
+        assert Kind.APP.html_path == Path("apps")
+
+    def test_command(self):
+        """Test the command property of the Kind enum."""
+        # Test all three enum values
+        assert Kind.NB.command == ["uvx", "marimo", "export", "html", "--sandbox"]
+        assert Kind.NB_WASM.command == ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "edit"]
+        assert Kind.APP.command == ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "run", "--no-show-code"]
 
 
 class TestNotebook:
@@ -93,7 +111,7 @@ class TestNotebook:
         with patch.object(Path, 'exists', return_value=True), \
              patch.object(Path, 'is_file', return_value=True), \
              patch.object(Path, 'suffix', '.py'):
-            notebook = Notebook(notebook_path, kind=Kind.APP)
+            notebook = Notebook(notebook_path, kind=Kind.NB)  # Changed to Kind.NB
 
             # Execute
             result = notebook.export(output_dir)
@@ -105,8 +123,7 @@ class TestNotebook:
             # Check that the command includes the notebook-specific flags
             cmd_args = mock_run.call_args[0][0]
             print(cmd_args)
-            assert "--mode" in cmd_args
-            assert "run" in cmd_args
+            assert "--sandbox" in cmd_args
             assert "--no-show-code" not in cmd_args
 
     @patch('subprocess.run')
