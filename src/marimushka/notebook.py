@@ -5,9 +5,40 @@ This module provides the Notebook class for representing and exporting marimo no
 
 import dataclasses
 import subprocess
+from enum import Enum
 from pathlib import Path
 
 from loguru import logger
+
+
+class Kind(Enum):
+    """Kind of notebook."""
+
+    NB = "notebook"
+    NB_WASM = "notebook_wasm"
+    APP = "app"
+
+    @property
+    def command(self) -> list[str]:
+        """Command used for export."""
+        match self:
+            case Kind.NB:
+                return ["uvx", "marimo", "export", "html", "--sandbox"]
+            case Kind.NB_WASM:
+                return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "edit"]
+            case Kind.APP:
+                return ["uvx", "marimo", "export", "html-wasm", "--sandbox", "--mode", "run", "--no-show-code"]
+
+    @property
+    def html_path(self) -> Path:
+        """Path for html."""
+        match self:
+            case Kind.NB:
+                return Path("notebooks")
+            case Kind.NB_WASM:
+                return Path("notebooks_wasm")
+            case Kind.APP:
+                return Path("apps")
 
 
 @dataclasses.dataclass(frozen=True)
@@ -19,13 +50,12 @@ class Notebook:
 
     Attributes:
         path (Path): Path to the marimo notebook (.py file)
-        is_app (bool): Whether the notebook should be treated as an app (run mode)
-                      or a regular notebook (edit mode). Defaults to False.
+        kind (Kind): How the notebook ts treated
 
     """
 
     path: Path
-    is_app: bool = False
+    kind: Kind = Kind.NB
 
     def __post_init__(self):
         """Validate the notebook path after initialization.
@@ -42,7 +72,7 @@ class Notebook:
         if not self.path.suffix == ".py":
             raise ValueError(f"File is not a Python file: {self.path}")
 
-    def to_wasm(self, output_dir: Path) -> bool:
+    def export(self, output_dir: Path) -> bool:
         """Export the notebook to HTML/WebAssembly format.
 
         This method exports the marimo notebook to HTML/WebAssembly format.
@@ -57,16 +87,7 @@ class Notebook:
             bool: True if export succeeded, False otherwise
 
         """
-        # Base command for marimo export
-        cmd: list[str] = ["uvx", "marimo", "export", "html-wasm", "--sandbox"]
-
-        # Configure export mode based on whether it's an app or a notebook
-        if self.is_app:
-            logger.info(f"Export {self.path.stem} as app")
-            cmd.extend(["--mode", "run", "--no-show-code"])  # Apps run in "run" mode with hidden code
-        else:
-            logger.info(f"Export {self.path.stem} as notebook")
-            cmd.extend(["--mode", "edit"])  # Notebooks run in "edit" mode
+        cmd = self.kind.command
 
         try:
             # Create the full output path and ensure the directory exists
@@ -77,7 +98,7 @@ class Notebook:
             cmd.extend([str(self.path), "-o", str(output_file)])
 
             # Run marimo export command
-            # logger_instance.debug(f"Running command: {cmd}")
+            logger.debug(f"Running command: {cmd}")
             subprocess.run(cmd, capture_output=True, text=True, check=True)
             # logger_instance.info(f"Successfully exported {self.path.stem}")
             return True
@@ -99,4 +120,16 @@ class Notebook:
     @property
     def html_path(self) -> Path:
         """Return the path to the exported HTML file."""
-        return Path("apps") / f"{self.path.stem}.html" if self.is_app else Path("notebooks") / f"{self.path.stem}.html"
+        return self.kind.html_path / f"{self.path.stem}.html"
+
+
+def folder2notebooks(folder: Path | str | None, kind: Kind = Kind.NB) -> list[Notebook]:
+    """Find all marimo notebooks in a directory."""
+    if folder is None or folder == "":
+        return []
+
+    # which files are included here?
+    notebooks = list(Path(folder).rglob("*.py"))
+
+    # uvx marimo export html-wasm / html --sandbox (--mode edit/run) (
+    return [Notebook(path=nb, kind=kind) for nb in notebooks]

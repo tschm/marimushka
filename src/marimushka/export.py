@@ -26,7 +26,7 @@ import typer
 from loguru import logger
 from rich import print as rich_print
 
-from marimushka.notebook import Notebook
+from marimushka.notebook import Kind, Notebook, folder2notebooks
 
 from . import __version__
 
@@ -43,19 +43,13 @@ def callback(ctx: typer.Context):
         raise typer.Exit()
 
 
-def _folder2notebooks(folder: Path | str | None, is_app: bool) -> list[Notebook]:
-    """Find all marimo notebooks in a directory."""
-    if folder is None or folder == "":
-        return []
-
-    notebooks = list(Path(folder).rglob("*.py"))
-
-    return [Notebook(path=nb, is_app=is_app) for nb in notebooks]
-
-
 def _generate_index(
-    output: Path, template_file: Path, notebooks: list[Notebook] | None = None, apps: list[Notebook] | None = None
-) -> None:
+    output: Path,
+    template_file: Path,
+    notebooks: list[Notebook] | None = None,
+    apps: list[Notebook] | None = None,
+    notebooks_wasm: list[Notebook] | None = None,
+) -> str:
     """Generate an index.html file that lists all the notebooks.
 
     This function creates an HTML index page that displays links to all the exported
@@ -63,27 +57,32 @@ def _generate_index(
     with a formatted title and a link to open it.
 
     Args:
+        notebooks_wasm:
         notebooks (List[Notebook]): List of notebooks with data for notebooks
         apps (List[Notebook]): List of notebooks with data for apps
+        notebooks_wasm (List[Notebook]): List of notebooks with data for notebooks_wasm
         output (Path): Directory where the index.html file will be saved
         template_file (Path, optional): Path to the template file. If None, uses the default template.
-        logger_instance: Logger instance to use. Defaults to the standard logger.
 
     Returns:
-        None
+        str: The rendered HTML content as a string
 
     """
     # Initialize empty lists if None is provided
     notebooks = notebooks or []
     apps = apps or []
+    notebooks_wasm = notebooks_wasm or []
 
     # Export notebooks to WebAssembly
     for nb in notebooks:
-        nb.to_wasm(output_dir=output / "notebooks")
+        nb.export(output_dir=output / "notebooks")
 
     # Export apps to WebAssembly
     for nb in apps:
-        nb.to_wasm(output_dir=output / "apps")
+        nb.export(output_dir=output / "apps")
+
+    for nb in notebooks_wasm:
+        nb.export(output_dir=output / "notebooks_wasm")
 
     # Create the full path for the index.html file
     index_path: Path = Path(output) / "index.html"
@@ -95,6 +94,7 @@ def _generate_index(
     template_dir = template_file.parent
     template_name = template_file.name
 
+    rendered_html = ""
     try:
         # Create Jinja2 environment and load template
         env = jinja2.Environment(
@@ -103,7 +103,11 @@ def _generate_index(
         template = env.get_template(template_name)
 
         # Render the template with notebook and app data
-        rendered_html = template.render(notebooks=notebooks, apps=apps)
+        rendered_html = template.render(
+            notebooks=notebooks,
+            apps=apps,
+            notebooks_wasm=notebooks_wasm,
+        )
 
         # Write the rendered HTML to the index.html file
         try:
@@ -115,8 +119,12 @@ def _generate_index(
     except jinja2.exceptions.TemplateError as e:
         logger.error(f"Error rendering template {template_file}: {e}")
 
+    return rendered_html
 
-def _main_impl(output: str | Path, template: str | Path, notebooks: str | Path, apps: str | Path) -> None:
+
+def _main_impl(
+    output: str | Path, template: str | Path, notebooks: str | Path, apps: str | Path, notebooks_wasm: str | Path
+) -> str:
     """Implement the main function.
 
     This function contains the actual implementation of the main functionality.
@@ -139,18 +147,28 @@ def _main_impl(output: str | Path, template: str | Path, notebooks: str | Path, 
     logger.info(f"Notebooks: {notebooks}")
     logger.info(f"Apps: {apps}")
 
-    notebooks_data = _folder2notebooks(folder=notebooks, is_app=False)
-    apps_data = _folder2notebooks(folder=apps, is_app=True)
+    # todo: add a few more flags here to export the notebooks in different formats
+    # todo: fix the template
+    notebooks_data = folder2notebooks(folder=notebooks, kind=Kind.NB)
+    apps_data = folder2notebooks(folder=apps, kind=Kind.APP)
+    notebooks_wasm_data = folder2notebooks(folder=notebooks_wasm, kind=Kind.NB_WASM)
 
     logger.info(f"# notebooks_data: {len(notebooks_data)}")
     logger.info(f"# apps_data: {len(apps_data)}")
+    logger.info(f"# notebooks_wasm_data: {len(notebooks_wasm_data)}")
 
     # Exit if no notebooks or apps were found
-    if not notebooks_data and not apps_data:
+    if not notebooks_data and not apps_data and not notebooks_wasm_data:
         logger.warning("No notebooks or apps found!")
-        return
+        return ""
 
-    _generate_index(output=output_dir, template_file=template_file, notebooks=notebooks_data, apps=apps_data)
+    return _generate_index(
+        output=output_dir,
+        template_file=template_file,
+        notebooks=notebooks_data,
+        apps=apps_data,
+        notebooks_wasm=notebooks_wasm_data,
+    )
 
 
 def main(
@@ -158,16 +176,21 @@ def main(
     template: str | Path = Path(__file__).parent / "templates" / "default.html.j2",
     notebooks: str | Path = "notebooks",
     apps: str | Path = "apps",
-) -> None:
+    notebooks_wasm: str | Path = "notebooks",
+) -> str:
     """Export marimo notebooks.
 
     This function:
 
     1. Exports all marimo notebooks in 'notebooks' and 'apps' directories
     2. Generates an index.html file that lists all the notebooks
+
+    Returns:
+        str: The rendered HTML content as a string
+
     """
-    # Call the implementation function with the provided parameters
-    _main_impl(output=output, template=template, notebooks=notebooks, apps=apps)
+    # Call the implementation function with the provided parameters and return its result
+    return _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
 
 
 @app.command(name="compile")
@@ -181,6 +204,9 @@ def _main_typer(
     ),
     notebooks: str = typer.Option("notebooks", "--notebooks", "-n", help="Directory containing marimo notebooks"),
     apps: str = typer.Option("apps", "--apps", "-a", help="Directory containing marimo apps"),
+    notebooks_wasm: str = typer.Option(
+        "notebooks", "--notebooks-wasm", "-nw", help="Directory containing marimo notebooks"
+    ),
 ) -> None:
     """Export marimo notebooks.
 
@@ -195,6 +221,7 @@ def _main_typer(
     template_val = getattr(template, "default", template)
     notebooks_val = getattr(notebooks, "default", notebooks)
     apps_val = getattr(apps, "default", apps)
+    notebooks_wasm_val = getattr(notebooks_wasm, "default", notebooks_wasm)
 
     # Call the main function with the resolved parameter values
     main(
@@ -202,6 +229,7 @@ def _main_typer(
         template=template_val,
         notebooks=notebooks_val,
         apps=apps_val,
+        notebooks_wasm=notebooks_wasm_val,
     )
 
 

@@ -6,11 +6,15 @@ inputs:
     description: 'The html.j2 template for export'
     required: false
   apps:
-    description: 'The apps folder'
+    description: 'The folder for applications'
     required: false
     default: 'apps'
   notebooks:
-    description: 'The notebooks folder'
+    description: 'The folder for plain html notebooks'
+    required: false
+    default: 'notebooks'
+  notebooks_wasm:
+    description: 'The folder for interactive notebooks'
     required: false
     default: 'notebooks'
   publish:
