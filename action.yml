@@ -61,13 +61,14 @@ runs:
         echo "Exporting to: $OUTPUT_DIR"
         echo "Apps: ${{ inputs.apps }}"
         echo "Notebooks: ${{ inputs.notebooks }}"
-        echo "Publish: ${{ inputs.publish }}"
+        echo "Notebooks-wasm: ${{ inputs.notebooks_wasm }}"
 
         uvx marimushka export \
           --template "$TEMPLATE" \
           --output "$OUTPUT_DIR" \
           --apps "${{ inputs.apps }}" \
           --notebooks "${{ inputs.notebooks }}"
+          --notebooks_wasm "${{ inputs.notebooks_wasm }}"
 
         # Create .nojekyll file to prevent GitHub Pages from processing with Jekyll
         touch "$OUTPUT_DIR/.nojekyll"
