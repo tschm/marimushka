@@ -67,7 +67,7 @@ runs:
           --template "$TEMPLATE" \
           --output "$OUTPUT_DIR" \
           --apps "${{ inputs.apps }}" \
-          --notebooks "${{ inputs.notebooks }}"
+          --notebooks "${{ inputs.notebooks }}" \
           --notebooks-wasm "${{ inputs.notebooks_wasm }}"
 
         # Create .nojekyll file to prevent GitHub Pages from processing with Jekyll
