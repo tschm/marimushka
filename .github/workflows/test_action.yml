@@ -32,7 +32,7 @@ jobs:
         with:
           # Only specify the notebooks folder, leave apps empty to test that scenario
           notebooks: 'src/tests/resources/notebooks'
-
+          apps: ''
 
   book:
     runs-on: ubuntu-latest
