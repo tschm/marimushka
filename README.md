@@ -5,9 +5,9 @@
 [![Python Tests](https://img.shields.io/github/actions/workflow/status/jebel-quant/marimushka/pytest.yml?label=tests)](https://github.com/jebel-quant/marimushka/actions/workflows/pytest.yml)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/jebel-quant/marimushka/release.yml?label=release)](https://github.com/jebel-quant/marimushka/actions/workflows/release.yml)
-[![GitHub stars](https://img.shields.io/github/stars/jebel-quant/marimushka)](https://github.com/jebel-quant/marimushka/stargazers)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Created with qCradle](https://img.shields.io/badge/Created%20with-qCradle-blue?style=flat-square)](https://github.com/jebel-quant/package)
+[![Created with qCradle](https://img.shields.io/badge/Created%20with-qCradle-blue?style=flat-square)](https://github.com/tschm/package)
+[![GitHub stars](https://img.shields.io/github/stars/jebel-quant/marimushka)](https://github.com/jebel-quant/marimushka/stargazers)
 
 ## 🚀 Overview
 
