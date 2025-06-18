@@ -146,7 +146,7 @@ def _main_impl(
     logger.info(f"Using template file: {template_file}")
     logger.info(f"Notebooks: {notebooks}")
     logger.info(f"Apps: {apps}")
-    logger.info(f"notebooks_wasm: {notebooks_wasm}")
+    logger.info(f"Notebooks-wasm: {notebooks_wasm}")
 
     notebooks_data = folder2notebooks(folder=notebooks, kind=Kind.NB)
     apps_data = folder2notebooks(folder=apps, kind=Kind.APP)
@@ -219,7 +219,7 @@ def _main_typer(
     notebooks: str = typer.Option("notebooks", "--notebooks", "-n", help="Directory containing marimo notebooks"),
     apps: str = typer.Option("apps", "--apps", "-a", help="Directory containing marimo apps"),
     notebooks_wasm: str = typer.Option(
-        "notebooks", "--notebooks-wasm", "-nw", help="Directory containing marimo notebooks"
+        "notebooks_wasm", "--notebooks-wasm", "-nw", help="Directory containing marimo notebooks"
     ),
 ) -> None:
     """Export marimo notebooks and build an HTML index page linking to them."""
