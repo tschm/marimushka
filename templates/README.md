@@ -20,26 +20,13 @@ You can specify which template to use when running Marimushka:
 
 ```bash
 # Use the default template (default)
-marimushka export
+uvx marimushka export
 
 # Use the Tailwind template
-marimushka export --template /path/to/marimushka/templates/tailwind.html.j2
+uvx marimushka export --template /path/to/marimushka/templates/tailwind.html.j2
 ```
 
-### Python API
-
-```python
-from marimushka.export import main
-from pathlib import Path
-
-# Use the default template (default)
-main()
-
-# Use the Tailwind template
-main(template=Path(__file__).parent / "templates" / "tailwind.html.j2")
-```
-
-## Creating Your Own Template
+### Creating Your Own Template
 
 You can create your own custom template by using the existing templates
 as a reference. The template should be a Jinja2 template

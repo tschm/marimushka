@@ -123,7 +123,6 @@ jobs:
           notebooks: 'notebooks'                # Optional: notebooks directory
           apps: 'apps'                          # Optional: apps directory
           notebooks_wasm: 'notebooks'           # Optional: interactive notebooks directory
-          publish: 'false'                      # Optional: publish to GitHub Pages
 ```
 
 The action will create a GitHub artifact named 'marimushka' containing all exported files.

@@ -22,7 +22,7 @@ jobs:
 
       # Step 2: Test the export action with only notebooks (no apps)
       - name: "Build the virtual environment for ${{ github.repository }}"
-        uses: ./actions/export
+        uses: .
         with:
           # Only specify the notebooks folder, leave apps empty to test that scenario
           notebooks: 'src/tests/resources/notebooks'
