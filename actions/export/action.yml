@@ -68,8 +68,8 @@ runs:
         touch "$OUTPUT_DIR/.nojekyll"
         echo "Created .nojekyll file"
 
-        echo "Publish the 'marimo' artifact"
-
+        echo "Publish the 'marimushka' artifact"
+        tree /artifacts/marimushka
 
     - name: 📤 Upload HTML artifacts
       uses: actions/upload-artifact@v4
