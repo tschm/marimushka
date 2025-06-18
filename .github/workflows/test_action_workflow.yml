@@ -40,7 +40,7 @@ jobs:
       - name: Verify artifact
         run: |
           tree /tmp/all-inputs
-          
+
           echo "🔍 Verifying all-inputs artifacts..."
 
           # Check if index.html exists
