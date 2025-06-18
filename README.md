@@ -36,14 +36,18 @@ with a web browser - no Python installation required!
 
 - Python 3.10+
 - [marimo](https://marimo.io) (installed automatically as a dependency)
-- [uv](https://github.com/astral-sh/uv) (recommended for installation)
+- [uvx](https://docs.astral.sh/uv/guides/tools/) (recommended to bypass installation)
 
 ## 📥 Installation
 
-We do not recommend to install the tool locally. Please use
+We do not recommend installing the tool locally. Please use
 
 ```bash
+# install marimushka on the fly
 uvx marimushka
+
+# or 
+uvx marimushka --help
 ```
 
 ## 🛠️ Usage
@@ -51,22 +55,29 @@ uvx marimushka
 ### Command Line
 
 ```bash
-# Basic usage (uses default settings)
+# Basic usage (some help is displayed)
 uvx marimushka
 
+# Start exporting, get some help first
+uvx marimushka export --help
+# Do it
+uvx marimushka export
+
 # Specify a custom template
-uvx marimushka --template path/to/template.html.j2
+uvx marimushka export --template path/to/template.html.j2
 
 # Specify a custom output directory
-uvx marimushka --output my_site
+uvx marimushka export --output my_site
 
 # Specify custom notebook and app directories
-uvx marimushka --notebooks path/to/notebooks --apps path/to/apps
+uvx marimushka export --notebooks path/to/notebooks --apps path/to/apps
 ```
 
 ### Project Structure
 
-Marimushka recommends your project to have the following structure:
+Marimushka recommends your project to have the following structure
+to be aligned with its default arguments. However, it is possible
+to inject alternative locations
 
 ```bash
 your-project/
@@ -117,7 +128,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Export marimo notebooks
-        uses: jebel-quant/marimushka@v1
+        uses: jebel-quant/marimushka@v0.0.26
         with:
           template: 'path/to/template.html.j2'  # Optional: custom template
           notebooks: 'notebooks'                # Optional: notebooks directory
@@ -126,7 +137,7 @@ jobs:
 ```
 
 The action will create a GitHub artifact named 'marimushka' containing all exported files.
-The artifact is available in all jobs further downline declaring a dependency
+The artifact is available in all jobs further declaring a dependency
 on the 'export' job.
 
 #### Action Inputs
@@ -137,7 +148,6 @@ on the 'export' job.
 | `apps` | Directory containing marimo app files (.py) to be exported as WebAssembly applications with hidden code (run mode). | No | `apps` |
 | `notebooks_wasm` | Directory containing marimo notebook files (.py) to be exported as interactive WebAssembly notebooks with editable code (edit mode). | No | `notebooks` |
 | `template` | Path to a custom Jinja2 template file (.html.j2) for the index page. If not provided, the default Tailwind CSS template will be used. | No | |
-| `publish` | Whether to publish the exported files to GitHub Pages. Set to "true" to enable publishing. | No | `false` |
 
 #### Example: Export and Deploy to GitHub Pages
 
@@ -156,7 +166,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Export marimo notebooks
-        uses: jebel-quant/marimushka@v1
+        uses: jebel-quant/marimushka@0.0.26
         with:
           notebooks: 'notebooks'
           apps: 'apps'
