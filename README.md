@@ -46,7 +46,7 @@ We do not recommend installing the tool locally. Please use
 # install marimushka on the fly
 uvx marimushka
 
-# or 
+# or
 uvx marimushka --help
 ```
 
