@@ -146,9 +146,8 @@ def _main_impl(
     logger.info(f"Using template file: {template_file}")
     logger.info(f"Notebooks: {notebooks}")
     logger.info(f"Apps: {apps}")
+    logger.info(f"notebooks_wasm: {notebooks_wasm}")
 
-    # todo: add a few more flags here to export the notebooks in different formats
-    # todo: fix the template
     notebooks_data = folder2notebooks(folder=notebooks, kind=Kind.NB)
     apps_data = folder2notebooks(folder=apps, kind=Kind.APP)
     notebooks_wasm_data = folder2notebooks(folder=notebooks_wasm, kind=Kind.NB_WASM)
