@@ -32,8 +32,6 @@ jobs:
         with:
           # Only specify the notebooks folder, leave apps empty to test that scenario
           notebooks: 'src/tests/resources/notebooks'
-          apps: ''
-          #template: 'src/tests/resources/templates/tailwind.html.j2'
 
 
   book:
@@ -54,15 +52,16 @@ jobs:
       - name: Verify downloaded artifact
         run: |
           set -e
-          
+
           echo "🔍 Verifying artifacts..."
-          
+
           # Define the files to check
           required_files=(
             "artifacts/marimushka/index.html"
             "artifacts/marimushka/notebooks/fibonacci.html"
+            "artifacts/marimushka/notebooks/penguins.html"
           )
-          
+
           # Check each file
           for file in "${required_files[@]}"; do
           if [ ! -f "$file" ]; then
@@ -77,7 +76,7 @@ jobs:
               echo "✅ Found: $file"
           fi
           done
-          
+
           echo "🎉 All required artifacts are present."
 
   # Job to test the CLI help command
