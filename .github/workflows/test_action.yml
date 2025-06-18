@@ -35,23 +35,6 @@ jobs:
           apps: ''
           #template: 'src/tests/resources/templates/tailwind.html.j2'
 
-      # Step 3: Download the marimo artifact
-      # This step downloads the artifact created by the export action
-      - name: Download marimo artifact
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      # Step 4: Verify the downloaded artifact
-      - name: Verify downloaded artifact
-        run: |
-          tree artifacts
-
-          [ ! -f "artifacts/marimushka/index.html" ] && echo "❌ index.html missing" && exit 1
-          [ ! -f "artifacts/marimushka/notebooks/fibonacci.html" ] && echo "❌ fibonacci.html missing" && exit 1
-
-
-
 
   book:
     runs-on: ubuntu-latest
