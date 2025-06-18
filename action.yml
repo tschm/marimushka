@@ -21,10 +21,6 @@ inputs:
     description: 'Directory containing marimo notebook files (.py) to be exported as interactive WebAssembly notebooks with editable code (edit mode).'
     required: false
     default: 'notebooks'
-  publish:
-    description: 'Whether to publish the exported files to GitHub Pages. Set to "true" to enable publishing.'
-    required: false
-    default: 'false'
 
 
 runs:
