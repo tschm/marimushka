@@ -68,7 +68,7 @@ runs:
           --output "$OUTPUT_DIR" \
           --apps "${{ inputs.apps }}" \
           --notebooks "${{ inputs.notebooks }}"
-          --notebooks_wasm "${{ inputs.notebooks_wasm }}"
+          --notebooks-wasm "${{ inputs.notebooks_wasm }}"
 
         # Create .nojekyll file to prevent GitHub Pages from processing with Jekyll
         touch "$OUTPUT_DIR/.nojekyll"
