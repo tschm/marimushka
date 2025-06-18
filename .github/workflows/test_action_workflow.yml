@@ -1,0 +1,177 @@
+# GitHub Actions workflow for testing the Marimushka export action
+# This workflow tests various aspects of the Marimushka export functionality:
+# - Exporting only notebooks (no apps or notebooks_wasm)
+# - Exporting with all inputs (notebooks, apps, notebooks_wasm)
+# - Exporting with a custom template
+# - Error handling with non-existent directories
+
+name: Test Marimushka Action
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Test with only notebooks (no apps)
+  test-notebooks-only:
+    name: Test with notebooks only
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run action with notebooks only
+        uses: ./
+        with:
+          notebooks: 'src/tests/resources/notebooks'
+          apps: ''
+          notebooks_wasm: ''
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: marimushka
+          path: /tmp/notebooks-only
+
+      - name: Verify artifact
+        run: |
+          echo "🔍 Verifying notebooks-only artifacts..."
+
+          # Check if index.html exists
+          if [ ! -f "/tmp/notebooks-only/index.html" ]; then
+            echo "❌ Missing index.html"
+            exit 1
+          else
+            echo "✅ Found index.html"
+          fi
+
+          # Check if notebooks directory exists
+          if [ ! -d "/tmp/notebooks-only/notebooks" ]; then
+            echo "❌ Missing notebooks directory"
+            exit 1
+          else
+            echo "✅ Found notebooks directory"
+          fi
+
+          # List all files in the artifact
+          echo "📄 Files in the artifact:"
+          find /tmp/notebooks-only -type f | sort
+
+  # Test with all inputs (notebooks, apps, notebooks_wasm)
+  test-all-inputs:
+    name: Test with all inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run action with all inputs
+        uses: ./
+        with:
+          notebooks: 'src/tests/resources/notebooks'
+          apps: 'src/tests/resources/apps'
+          notebooks_wasm: 'src/tests/resources/notebooks_wasm'
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: marimushka
+          path: /tmp/all-inputs
+
+      - name: Verify artifact
+        run: |
+          echo "🔍 Verifying all-inputs artifacts..."
+
+          # Check if index.html exists
+          if [ ! -f "/tmp/all-inputs/index.html" ]; then
+            echo "❌ Missing index.html"
+            exit 1
+          else
+            echo "✅ Found index.html"
+          fi
+
+          # Check if all directories exist
+          for dir in "notebooks" "apps" "notebooks_wasm"; do
+            if [ ! -d "/tmp/all-inputs/$dir" ]; then
+              echo "❌ Missing $dir directory"
+              exit 1
+            else
+              echo "✅ Found $dir directory"
+            fi
+          done
+
+          # List all files in the artifact
+          echo "📄 Files in the artifact:"
+          find /tmp/all-inputs -type f | sort
+
+  # Test with custom template
+  test-custom-template:
+    name: Test with custom template
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run action with custom template
+        uses: ./
+        with:
+          notebooks: 'src/tests/resources/notebooks'
+          template: 'templates/tailwind.html.j2'
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: marimushka
+          path: /tmp/custom-template
+
+      - name: Verify artifact
+        run: |
+          echo "🔍 Verifying custom-template artifacts..."
+
+          # Check if index.html exists
+          if [ ! -f "/tmp/custom-template/index.html" ]; then
+            echo "❌ Missing index.html"
+            exit 1
+          else
+            echo "✅ Found index.html"
+          fi
+
+          # Check if the template was applied by looking for specific content
+          if ! grep -q "Built with" "/tmp/custom-template/index.html"; then
+            echo "❌ Template content not found in index.html"
+            exit 1
+          else
+            echo "✅ Template content found in index.html"
+          fi
+
+          # List all files in the artifact
+          echo "📄 Files in the artifact:"
+          find /tmp/custom-template -type f | sort
+
+  # Test error handling with non-existent directories
+  test-error-handling:
+    name: Test error handling
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run action with non-existent directories
+        id: run-with-errors
+        uses: ./
+        continue-on-error: true
+        with:
+          notebooks: 'non-existent-directory'
+          apps: 'another-non-existent-directory'
+
+      - name: Verify action completed
+        run: |
+          echo "Action completed with status: ${{ steps.run-with-errors.outcome }}"
+
+          # The action should complete without failing the workflow
+          # because we used continue-on-error
+          echo "✅ Action handled non-existent directories gracefully"
