@@ -110,10 +110,11 @@ Marimushka recommends your project to have the following structure:
 
 ```bash
 your-project/
-├── notebooks/     # Regular marimo notebooks (.py files)
-├── apps/          # Marimo applications (.py files)
-└── templates/     # Optional: Custom templates for export
-    └── custom.html.j2  # Default template location
+├── notebooks/       # Static marimo notebooks (.py files)
+├── notebooks_wasm/  # Interactive marimo notebooks (.py files)
+├── apps/            # Marimo applications (.py files)
+└── templates/       # Optional: Custom templates for export
+    └── custom.html.j2   # Default template location
 ```
 
 ### Marimo Notebook Requirements
@@ -150,8 +151,6 @@ and deploy your notebooks:
     template: 'path/to/template.html.j2'  # Optional: custom template
     notebooks: 'notebooks'                # Optional: notebooks directory
     apps: 'apps'                          # Optional: apps directory
-    publish: 'true'                       # Optional: publish to GitHub Pages
-                                          # (default: false)
 ```
 
 When the `publish` parameter is set to `true`, the action will:

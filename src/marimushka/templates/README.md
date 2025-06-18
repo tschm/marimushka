@@ -25,10 +25,10 @@ You can specify which template to use when running Marimushka:
 
 ```bash
 # Use the default template (default)
-marimushka compile
+marimushka export
 
 # Use the Tailwind template
-marimushka compile --template /path/to/marimushka/templates/tailwind.html.j2
+marimushka export --template /path/to/marimushka/templates/tailwind.html.j2
 ```
 
 ### Python API

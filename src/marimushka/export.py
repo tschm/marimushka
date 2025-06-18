@@ -208,7 +208,7 @@ def main(
     return _main_impl(output=output, template=template, notebooks=notebooks, apps=apps, notebooks_wasm=notebooks_wasm)
 
 
-@app.command(name="compile")
+@app.command(name="export")
 def _main_typer(
     output: str = typer.Option("_site", "--output", "-o", help="Directory where the exported files will be saved"),
     template: str = typer.Option(

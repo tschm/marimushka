@@ -17,9 +17,9 @@ def test_help():
     print("Command succeeded:")
     print(result.stdout)
 
-def test_compile():
-    """Test the compile command."""
+def test_export_help():
+    """Test the export command."""
     # Run the command and capture the output
-    result = subprocess.run(["marimushka", "compile", "--help"], capture_output=True, text=True, check=True)
+    result = subprocess.run(["marimushka", "export", "--help"], capture_output=True, text=True, check=True)
     print("Command succeeded:")
     print(result.stdout)

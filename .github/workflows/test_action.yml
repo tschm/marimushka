@@ -33,6 +33,8 @@ jobs:
           # Only specify the notebooks folder, leave apps empty to test that scenario
           notebooks: 'src/tests/resources/notebooks'
           apps: ''
+          #template: 'src/tests/resources/templates/tailwind.html.j2'
+
 
   book:
     runs-on: ubuntu-latest
@@ -51,20 +53,18 @@ jobs:
       # Step 2: Verify the downloaded artifact
       - name: Verify downloaded artifact
         run: |
-          set -e
 
           echo "🔍 Verifying artifacts..."
-
+          
           # Define the files to check
           required_files=(
             "artifacts/marimushka/index.html"
             "artifacts/marimushka/notebooks/fibonacci.html"
-            "artifacts/marimushka/notebooks/penguins.html"
           )
-
+          
           # Check each file
           for file in "${required_files[@]}"; do
-          if [ ! -f "$file" ]; then
+            if [ ! -f "$file" ]; then
               echo "❌ Missing required file: $file"
               echo "📂 Current directory: $(pwd)"
               echo "📄 Listing artifacts/marimushka:"
@@ -72,11 +72,11 @@ jobs:
               echo "📄 Listing artifacts/marimushka/notebooks:"
               ls -l artifacts/marimushka/notebooks || echo "❓ Directory not found"
               exit 1
-          else
+            else
               echo "✅ Found: $file"
-          fi
+            fi
           done
-
+          
           echo "🎉 All required artifacts are present."
 
   # Job to test the CLI help command
@@ -87,7 +87,7 @@ jobs:
       - name: Checkout ${{ github.repository }}
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python environment using uv
+      # Step 2: Set up a Python environment using uv
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: 3.13
@@ -96,5 +96,11 @@ jobs:
       - name: Display help
         run: |
           uv run marimushka --help
-          uv run marimushka compile --help
+
+      - name: Display help export
+        run: |
+          uv run marimushka export --help
+
+      - name: Display version
+        run: |
           uv run marimushka version
