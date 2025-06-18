@@ -113,17 +113,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Export marimo notebooks
-        uses: jebel-quant/marimushka/actions/export@v0.0.24
+        uses: jebel-quant/marimushka@v1
         with:
           template: 'path/to/template.html.j2'  # Optional: custom template
           notebooks: 'notebooks'                # Optional: notebooks directory
           apps: 'apps'                          # Optional: apps directory
+          notebooks_wasm: 'notebooks'           # Optional: interactive notebooks directory
+          publish: 'false'                      # Optional: publish to GitHub Pages
 ```
 
-The tool will create a Github artifact named 'marimushka'.
+The action will create a GitHub artifact named 'marimushka' containing all exported files.
 The artifact is available in all jobs further downline declaring a dependency
-on the 'export' job
+on the 'export' job.
+
+#### Action Inputs
+
+| Input | Description | Required | Default |
+|-------|-------------|----------|---------|
+| `notebooks` | Directory containing marimo notebook files (.py) to be exported as static HTML notebooks. | No | `notebooks` |
+| `apps` | Directory containing marimo app files (.py) to be exported as WebAssembly applications with hidden code (run mode). | No | `apps` |
+| `notebooks_wasm` | Directory containing marimo notebook files (.py) to be exported as interactive WebAssembly notebooks with editable code (edit mode). | No | `notebooks` |
+| `template` | Path to a custom Jinja2 template file (.html.j2) for the index page. If not provided, the default Tailwind CSS template will be used. | No | |
+| `publish` | Whether to publish the exported files to GitHub Pages. Set to "true" to enable publishing. | No | `false` |
+
+#### Example: Export and Deploy to GitHub Pages
+
+```yaml
+name: Export and Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  export-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Export marimo notebooks
+        uses: jebel-quant/marimushka@v1
+        with:
+          notebooks: 'notebooks'
+          apps: 'apps'
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: artifacts/marimushka
+          branch: gh-pages
+```
 
 ## 🎨 Customizing Templates
 
