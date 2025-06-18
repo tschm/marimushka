@@ -69,11 +69,11 @@ runs:
         echo "Created .nojekyll file"
 
         echo "Publish the 'marimushka' artifact"
-        tree /artifacts/marimushka
+        tree artifacts/marimushka
 
     - name: 📤 Upload HTML artifacts
       uses: actions/upload-artifact@v4
       with:
         name: marismushka
-        path: /artifacts/marimushka
+        path: artifacts/marimushka
         retention-days: 1
