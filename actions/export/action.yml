@@ -74,6 +74,6 @@ runs:
     - name: 📤 Upload HTML artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: marismushka
+        name: marimushka
         path: artifacts/marimushka
         retention-days: 1
