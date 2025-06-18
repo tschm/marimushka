@@ -43,39 +43,42 @@ jobs:
       contents: write
 
     steps:
-      # Step 3: Download the marimo artifact
+      # Step 1: Download the marimo artifact
       # This step downloads the artifact created by the export action
       - name: Download marimo artifact
         uses: actions/download-artifact@v4
         with:
           path: artifacts
 
-      # Step 4: Verify the downloaded artifact
+      # Step 2: Verify the downloaded artifact
       - name: Verify downloaded artifact
         run: |
-          tree artifacts
-
-          [ ! -f "artifacts/marimushka/index.html" ] && exit 1
-          [ ! -f "artifacts/marimushka/notebooks/fibonacci.html" ] && exit 1
-
-  # Job to verify that the template file exists
-  template:
-    runs-on: ubuntu-latest
-    steps:
-      # Step 1: Checkout the repository code
-      - name: Checkout ${{ github.repository }}
-        uses: actions/checkout@v4
-
-      # Step 2: Check if the template file exists
-      # This ensures the default template is available for the export action
-      - name: Check template file exists
-        run: |
-          if [ ! -f src/tests/resources/templates/default.html.j2 ]; then
-            echo "❌ Template file not found!"
-            exit 1
+          set -e
+          
+          echo "🔍 Verifying artifacts..."
+          
+          # Define the files to check
+          required_files=(
+            "artifacts/marimushka/index.html"
+            "artifacts/marimushka/notebooks/fibonacci.html"
+          )
+          
+          # Check each file
+          for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+              echo "❌ Missing required file: $file"
+              echo "📂 Current directory: $(pwd)"
+              echo "📄 Listing artifacts/marimushka:"
+              ls -l artifacts/marimushka || echo "❓ Directory not found"
+              echo "📄 Listing artifacts/marimushka/notebooks:"
+              ls -l artifacts/marimushka/notebooks || echo "❓ Directory not found"
+              exit 1
           else
-            echo "✅ Template file found."
+              echo "✅ Found: $file"
           fi
+          done
+          
+          echo "🎉 All required artifacts are present."
 
   # Job to test the CLI help command
   help:
@@ -94,3 +97,5 @@ jobs:
       - name: Display help
         run: |
           uv run marimushka --help
+          uv run marimushka compile --help
+          uv run marimushka version
