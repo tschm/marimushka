@@ -21,7 +21,7 @@ jobs:
       # Generate a new version tag based on semantic versioning
       - name: Generate Tag
         id: tag_step
-        uses: tschm/cradle/actions/tag@v0.3.01
+        uses: tschm/cradle/actions/tag@v0.3.06
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}  # Token for GitHub API access
 
@@ -32,7 +32,7 @@ jobs:
     steps:
       # Build the package (sdist and wheel) with the new version tag
       - name: build
-        uses: tschm/cradle/actions/build@v0.3.01
+        uses: tschm/cradle/actions/build@v0.3.06
         with:
           tag: ${{ needs.tagging.outputs.new_tag }}  # Use the tag from the previous job
 
@@ -50,10 +50,10 @@ jobs:
     steps:
       # Check out the repository code
       - name: Checkout [${{ github.repository }}]
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Download the built package artifacts from the build job
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: dist  # Artifact name containing the built packages
           path: dist  # Local path to download to
