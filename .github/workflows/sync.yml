@@ -24,7 +24,7 @@ permissions:
 
 env:
   TEMPLATE_REPO: 'tschm/.config-templates'
-  TEMPLATE_BRANCH: 'main'
+  TEMPLATE_BRANCH: '77-action-with-explicit-devcontainer-copy'
   TARGET_BRANCH: 'sync/update'
 
 jobs:
