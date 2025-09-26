@@ -40,7 +40,7 @@ jobs:
 
       - name: Sync Template
         id: sync
-        uses: jebel-quant/sync_template@main
+        uses: jebel-quant/sync_template@v0.3.0
         with:
           token: ${{ secrets.PAT_TOKEN }}
           template-repository: ${{ env.TEMPLATE_REPO }}
