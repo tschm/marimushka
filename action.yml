@@ -27,7 +27,7 @@ runs:
   using: "composite"
   steps:
     - name: 📦 Checkout repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: 🚀 Install uv
       uses: astral-sh/setup-uv@v7
