@@ -11,5 +11,5 @@ include: |
     Makefile
     ruff.toml
 exclude: |
-    .github/workflows/docker.yml
     .github/workflows/devcontainer.yml
+    .github/workflows/docker.yml
